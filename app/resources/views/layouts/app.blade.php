@@ -23,17 +23,40 @@
     <body class="font-sans antialiased">
         @php
             $restaurant = request()->attributes->get('restaurant');
-            $bgImages = ['bg-01.jpg', 'bg-02.jpg', 'bg-03.jpg', 'bg-04.jpg', 'bg-05.jpg', 'bg-06.jpg'];
             $slugSeed = $restaurant?->slug ?? 'venueflow';
             $rotationSeed = crc32($slugSeed) + (int) now()->dayOfYear;
-            $bgImage = $bgImages[$rotationSeed % count($bgImages)];
+            $backgroundDirs = [
+                'images/restaurant-backgrounds',
+                'images/restaurantbackgrounds',
+                'public-images-restaurantbackgrounds',
+            ];
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+            $bgCandidates = collect($backgroundDirs)
+                ->flatMap(function (string $dir) use ($allowedExtensions) {
+                    $path = public_path($dir);
+                    if (! is_dir($path)) {
+                        return [];
+                    }
+
+                    return collect(\Illuminate\Support\Facades\File::files($path))
+                        ->filter(fn ($file) => in_array(strtolower($file->getExtension()), $allowedExtensions, true))
+                        ->map(fn ($file) => $dir.'/'.$file->getFilename())
+                        ->all();
+                })
+                ->sort()
+                ->values()
+                ->all();
+
+            $bgImagePath = count($bgCandidates)
+                ? $bgCandidates[$rotationSeed % count($bgCandidates)]
+                : 'images/restaurant-backgrounds/bg-01.jpg';
         @endphp
 
         <div class="relative min-h-screen overflow-x-hidden bg-gradient-to-b from-slate-100 via-slate-50 to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 dark:text-white">
             @if($restaurant)
                 <div
                     class="pointer-events-none absolute inset-0 bg-cover bg-center opacity-15"
-                    style="background-image: url('{{ asset('images/restaurant-backgrounds/'.$bgImage) }}');"
+                    style="background-image: url('{{ asset($bgImagePath) }}');"
                 ></div>
                 <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/75 via-slate-50/80 to-white/90 dark:from-slate-900/80 dark:via-slate-900/85 dark:to-slate-950/95"></div>
             @endif
@@ -59,7 +82,6 @@
 
             <footer class="relative z-10 py-8">
                 <div class="mx-auto flex w-full max-w-4xl items-center justify-center gap-2 text-xs text-slate-600 dark:text-slate-300">
-                    <img src="{{ asset('favicon.ico') }}" alt="VenueFlow logo" class="h-5 w-5 rounded">
                     <span>Skapad av</span>
                     <a href="https://alexahman.se" target="_blank" rel="noopener noreferrer" class="font-semibold text-slate-800 hover:text-indigo-600 dark:text-slate-100 dark:hover:text-indigo-400">AlexAhman.se</a>
                 </div>

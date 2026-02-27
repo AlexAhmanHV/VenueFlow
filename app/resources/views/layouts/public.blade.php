@@ -25,16 +25,39 @@
     </head>
     <body class="font-sans antialiased">
         @php
-            $bgImages = ['bg-01.jpg', 'bg-02.jpg', 'bg-03.jpg', 'bg-04.jpg', 'bg-05.jpg', 'bg-06.jpg'];
             $slugSeed = $restaurant?->slug ?? 'venueflow';
             $rotationSeed = crc32($slugSeed) + (int) now()->dayOfYear;
-            $bgImage = $bgImages[$rotationSeed % count($bgImages)];
+            $backgroundDirs = [
+                'images/restaurant-backgrounds',
+                'images/restaurantbackgrounds',
+                'public-images-restaurantbackgrounds',
+            ];
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+            $bgCandidates = collect($backgroundDirs)
+                ->flatMap(function (string $dir) use ($allowedExtensions) {
+                    $path = public_path($dir);
+                    if (! is_dir($path)) {
+                        return [];
+                    }
+
+                    return collect(\Illuminate\Support\Facades\File::files($path))
+                        ->filter(fn ($file) => in_array(strtolower($file->getExtension()), $allowedExtensions, true))
+                        ->map(fn ($file) => $dir.'/'.$file->getFilename())
+                        ->all();
+                })
+                ->sort()
+                ->values()
+                ->all();
+
+            $bgImagePath = count($bgCandidates)
+                ? $bgCandidates[$rotationSeed % count($bgCandidates)]
+                : 'images/restaurant-backgrounds/bg-01.jpg';
         @endphp
 
         <div class="relative min-h-screen overflow-x-hidden bg-gray-50 dark:bg-gray-900">
             <div
                 class="pointer-events-none absolute inset-0 bg-cover bg-center opacity-20"
-                style="background-image: url('{{ asset('images/restaurant-backgrounds/'.$bgImage) }}');"
+                style="background-image: url('{{ asset($bgImagePath) }}');"
             ></div>
             <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/70 via-white/75 to-slate-50/90 dark:from-slate-900/80 dark:via-slate-900/85 dark:to-slate-950/95"></div>
 
@@ -44,7 +67,6 @@
             </main>
             <footer class="relative z-10 py-8">
                 <div class="mx-auto flex w-full max-w-4xl items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-                    <img src="{{ asset('favicon.ico') }}" alt="VenueFlow logo" class="h-5 w-5 rounded">
                     <span>Skapad av</span>
                     <a href="https://alexahman.se" target="_blank" rel="noopener noreferrer" class="font-semibold text-gray-800 hover:text-indigo-600 dark:text-gray-100 dark:hover:text-indigo-400">AlexAhman.se</a>
                 </div>
