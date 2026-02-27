@@ -1,7 +1,7 @@
-## VenueFlow Additions (Menu Catalog)
+﻿## VenueFlow Additions (Menu Catalog)
 
-- Demo Hub startsida finns pa `/` med lankar till alla huvudfloden.
-- Inloggningsuppgifter for demo finns har i README (inte hardkodat i UI).
+- Demo Hub startsida finns på `/` med länkar till alla huvudflöden.
+- Inloggningsuppgifter för demo finns här i README (inte hårdkodat i UI).
 - SuperAdmin can now maintain a global dish catalog at `/platform/dish-templates`.
 - SuperAdmin can now maintain a global drink catalog at `/platform/drink-templates`.
 - Restaurant admins/managers can open `/r/{slug}/admin/menu` and add dishes from that catalog to the restaurant menu.
@@ -29,6 +29,15 @@
 6. Verify public pages:
    - `/r/golfbaren/menu`
    - `/r/golfbaren/book/details`
+
+### Render + Supabase (Persistent Demo Data)
+
+- Supabase data is persistent, so you should **not** run destructive reset commands in deploy.
+- Use this Post Deploy Command on Render:
+  - `php artisan migrate --force && php artisan db:seed --class=DemoSeeder --force`
+- Important:
+  - Do **not** use `php artisan migrate:fresh` in Render.
+  - `DemoSeeder` is idempotent and only creates missing demo data (it does not wipe existing bookings/menu/resources).
 
 ### Menu Images (Food + Drinks)
 
@@ -147,3 +156,4 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+

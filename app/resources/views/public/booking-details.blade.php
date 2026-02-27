@@ -1,5 +1,5 @@
 <x-public-layout :restaurant="$restaurant">
-    <div class="bg-gray-100 dark:bg-gray-800">
+    <div>
         <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <!-- Header -->
             <div class="text-center">
@@ -38,7 +38,7 @@
                 
                 <!-- Left Column: Form -->
                 <div class="lg:col-span-2">
-                    <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+                    <div class="rounded-lg border border-white/60 bg-white/85 p-6 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-gray-900/85">
                         @if($errors->any())
                             <div class="mb-6 rounded-md border border-red-300 bg-red-50 p-4 dark:border-red-600 dark:bg-red-900/30">
                                 <p class="text-sm font-medium text-red-700 dark:text-red-200">{{ $errors->first() }}</p>
@@ -125,7 +125,7 @@
 
                 <!-- Right Column: Cart Summary -->
                 <div class="lg:col-span-1">
-                    <div class="sticky top-12 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+                    <div class="sticky top-12 rounded-lg border border-white/60 bg-white/90 p-6 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-gray-900/90">
                         <h2 class="text-lg font-medium text-gray-900 dark:text-white">Din bokning</h2>
                         <div class="mt-4">
                             <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">

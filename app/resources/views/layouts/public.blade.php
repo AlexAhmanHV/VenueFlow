@@ -25,7 +25,7 @@
     </head>
     <body class="font-sans antialiased">
         @php
-            $bgImages = ['bg-01.svg', 'bg-02.svg', 'bg-03.svg', 'bg-04.svg', 'bg-05.svg', 'bg-06.svg'];
+            $bgImages = ['bg-01.jpg', 'bg-02.jpg', 'bg-03.jpg', 'bg-04.jpg', 'bg-05.jpg', 'bg-06.jpg'];
             $slugSeed = $restaurant?->slug ?? 'venueflow';
             $rotationSeed = crc32($slugSeed) + (int) now()->dayOfYear;
             $bgImage = $bgImages[$rotationSeed % count($bgImages)];

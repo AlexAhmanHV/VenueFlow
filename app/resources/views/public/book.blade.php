@@ -1,5 +1,5 @@
 <x-public-layout :restaurant="$restaurant">
-    <div class="bg-gray-100 dark:bg-gray-800">
+    <div>
         <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <!-- Header -->
             <div class="text-center">
@@ -39,7 +39,7 @@
                 <!-- Left Column: Find and Add -->
                 <div class="space-y-8 lg:col-span-2">
                     <!-- Find Availability -->
-                    <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+                    <div class="rounded-lg border border-white/60 bg-white/85 p-6 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-gray-900/85">
                         <h2 class="text-lg font-medium text-gray-900 dark:text-white">1. Hitta lediga tider</h2>
                         <form method="GET" class="mt-4 grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-4">
                             <div class="sm:col-span-2">
@@ -72,7 +72,7 @@
 
                     <!-- Add Slot -->
                     @if(request()->has('resource_type'))
-                    <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+                    <div class="rounded-lg border border-white/60 bg-white/85 p-6 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-gray-900/85">
                         <h2 class="text-lg font-medium text-gray-900 dark:text-white">2. Välj en tid</h2>
                          <p class="mt-1 text-sm {{ count($slots) ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400' }}">
                             {{ count($slots) }} lediga tider hittades för ditt urval.
@@ -115,7 +115,7 @@
 
                 <!-- Right Column: Cart Summary -->
                 <div class="lg:col-span-1">
-                    <div class="sticky top-12 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+                    <div class="sticky top-12 rounded-lg border border-white/60 bg-white/90 p-6 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-gray-900/90">
                         <h2 class="text-lg font-medium text-gray-900 dark:text-white">Din bokning</h2>
                         <div class="mt-4">
                             <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">

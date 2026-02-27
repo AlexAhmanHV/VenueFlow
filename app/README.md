@@ -1,16 +1,16 @@
-# VenueFlow (Laravel 11, PHP 8.3)
+﻿# VenueFlow (Laravel 11, PHP 8.3)
 
-Multi-tenant bokningssystem for aktivitets-/restaurangstallen.
+Multi-tenant bokningssystem för aktivitets-/restaurangställen.
 
 ## Stack
 - Laravel 11
 - PHP 8.3
-- Postgres (primart, Supabase-kompatibelt)
+- Postgres (primärt, Supabase-kompatibelt)
 - Laravel Breeze (Blade + Tailwind)
 - Mail via `MAIL_MAILER=log`
 
 ## Multi-tenant modell
-- Tenant-scope via `restaurant_id` pa alla tenant-tabeller.
+- Tenant-scope via `restaurant_id` på alla tenant-tabeller.
 - Publik identifiering via slug: `/r/{slug}`.
 - Roller:
   - `SUPER_ADMIN` (plattform)
@@ -21,8 +21,8 @@ Multi-tenant bokningssystem for aktivitets-/restaurangstallen.
 
 ## Supabase setup (viktigt)
 1. Skapa ett Supabase-projekt.
-2. Ga till Database -> Connect och hamta **Direct connection** (inte pooler for migrations).
-3. Satt `.env`:
+2. Gå till Database -> Connect och hämta **Direct connection** (inte pooler för migrations).
+3. Sätt `.env`:
 
 ```env
 DB_CONNECTION=pgsql
@@ -35,14 +35,14 @@ DB_SSLMODE=require
 MAIL_MAILER=log
 ```
 
-4. Kor migration + seed:
+4. Kör migration + seed:
 
 ```bash
 php artisan migrate
 php artisan db:seed
 ```
 
-Notering: Supabase API-nycklar behovs inte. Appen anvander endast Postgres-anslutning.
+Notering: Supabase API-nycklar behövs inte. Appen använder endast Postgres-anslutning.
 
 ## Lokal start
 ```bash
@@ -59,15 +59,15 @@ php artisan serve
   - email: `super@demo.test`
   - password: `password`
 - Restaurang: `Golfbaren` (`/r/golfbaren`)
-- Resurser, oppettider (alla dagar 12:00-23:00) och menyartiklar skapas.
+- Resurser, öppettider (alla dagar 12:00-23:00) och menyartiklar skapas.
 
-## Testflode
-1. Logga in pa `/login` med `super@demo.test` / `password`.
-2. Ga till `/platform/restaurants` och skapa restaurang eller lagg till forsta admin via `/platform/restaurants/{id}/admins`.
-3. Ga till `/r/golfbaren/book` och skapa bokning som gast (utan konto).
-4. Bekraftelse visas pa `/r/golfbaren/booking/{public_id}`.
-5. Avbokningslank skickas via mail-logg (`storage/logs/laravel.log`) och anvander hashad token.
-6. Staff/Admin ser bokningar pa `/r/golfbaren/admin/bookings`.
+## Testflöde
+1. Logga in på `/login` med `super@demo.test` / `password`.
+2. Gå till `/platform/restaurants` och skapa restaurang eller lägg till första admin via `/platform/restaurants/{id}/admins`.
+3. Gå till `/r/golfbaren/book` och skapa bokning som gäst (utan konto).
+4. Bekräftelse visas på `/r/golfbaren/booking/{public_id}`.
+5. Avbokningslänk skickas via mail-logg (`storage/logs/laravel.log`) och använder hashad token.
+6. Staff/Admin ser bokningar på `/r/golfbaren/admin/bookings`.
 
 ## Tidzon och UTC
 - Restaurang har `timezone` (default `Europe/Stockholm`).
@@ -75,28 +75,41 @@ php artisan serve
 - Slot-generering och UI visas i restaurangens lokala tid.
 
 ## Konfliktkontroll
-- Overlapp: `new.start < existing.end AND new.end > existing.start`.
-- Buffert (per restaurang i `restaurant_settings`) inkluderas i tillganglighet + bokningskontroll.
+- Överlapp: `new.start < existing.end AND new.end > existing.start`.
+- Buffert (per restaurang i `restaurant_settings`) inkluderas i tillgänglighet + bokningskontroll.
 - Skapande av bokning sker i DB-transaktion med `lockForUpdate()`.
-- For PostgreSQL laggs dessutom en DB-level `EXCLUDE` constraint pa `booking_items` (GIST + tsrange) for hard dubbelbokningssparr.
-- Vid avbokning soft-deletas `booking_items` sa tidigare tider frigors.
+- För PostgreSQL läggs dessutom en DB-level `EXCLUDE` constraint på `booking_items` (GIST + tsrange) för hård dubbelbokningsspärr.
+- Vid avbokning soft-deletas `booking_items` så tidigare tider frigörs.
 
 ## Nya funktioner (utbyggnad)
-- Tvastegs-bokning: valj aktiviteter i steg 1 och slutför i steg 2.
+- Tvåstegsbokning: välj aktiviteter i steg 1 och slutför i steg 2.
 - Multi-aktivitet i samma bokning (`booking_items` 1..N).
 - Realtids hold av slot i 5 minuter via `booking_slot_holds`.
 - Staff live board: `/r/{slug}/admin/bookings/live-board`.
 - Snabbnoteringar per bokning (`booking_notes`).
-- Dashboard med nyckeltal: bokningar idag, incheckade, no-show, belaggning (estimat), forbestallningsintakt.
-- Rate limiting pa publika boknings-POST routes.
+- Dashboard med nyckeltal: bokningar idag, incheckade, no-show, beläggning (estimat), förbeställningsintäkt.
+- Rate limiting på publika boknings-POST routes.
 - Bokningsmail skickas queue-bart (notification implementerar `ShouldQueue`).
 - Restauranginställningar i admin:
-  - buffert, avbokningsgrans, slot-intervall, max samtidiga bokningar, standardlangd per aktivitet.
-- Personalnivaer inom restaurang: `STAFF` och `MANAGER` (utover `RESTAURANT_ADMIN`).
+  - buffert, avbokningsgräns, slot-intervall, max samtidiga bokningar, standardlängd per aktivitet.
+- Personalnivåer inom restaurang: `STAFF` och `MANAGER` (utöver `RESTAURANT_ADMIN`).
 - Daglig driftvy: `/r/{slug}/admin/operations`.
-- SuperAdmin kan satta start-aktiviteter vid skapande av restaurang och hantera aktiviteter pa `/platform/restaurants/{restaurant}/activities`.
+- SuperAdmin kan sätta start-aktiviteter vid skapande av restaurang och hantera aktiviteter på `/platform/restaurants/{restaurant}/activities`.
 
-## Kor tester
+## Kör tester
 ```bash
 php artisan test
 ```
+
+## Render deployment (utan databortfall)
+- Använd Supabase som persistent Postgres.
+- I Render, sätt Post Deploy Command till:
+
+```bash
+php artisan migrate --force
+php artisan db:seed --class=DemoSeeder --force
+```
+
+- Kör inte:
+  - `php artisan migrate:fresh`
+- `DemoSeeder` är idempotent och fyller bara på saknad demodata (t.ex. `golfbaren`, resurser, öppettider, grundmeny) utan att rensa befintlig data.
