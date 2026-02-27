@@ -97,6 +97,13 @@
                     @endisset
                 </div>
             </header>
+            @if (config('demo.public_mode') && ! session((string) config('demo.session_flag', 'demo.full_access_granted')))
+                <div class="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                    Read-only demo mode: changes are blocked.
+                    <a href="{{ route('demo.access.show') }}" class="font-semibold underline">Unlock full access</a>
+                    to enable write actions.
+                </div>
+            @endif
 
             <!-- Page Content -->
             <main class="flex-1 overflow-y-auto">

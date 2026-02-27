@@ -58,8 +58,22 @@ php artisan serve
 - SuperAdmin
   - email: `super@demo.test`
   - password: `password`
+- Read-only owner demo (public mode)
+  - email: `owner@demo.test`
+  - password: `password`
 - Restaurang: `Golfbaren` (`/r/golfbaren`)
 - Resurser, öppettider (alla dagar 12:00-23:00) och menyartiklar skapas.
+
+## Public demo mode (recommended in production demo)
+- Set in `.env`:
+  - `DEMO_PUBLIC_MODE=true`
+  - `DEMO_FULL_ACCESS_KEY=<secret>`
+  - `DEMO_PRIVILEGED_EMAILS=super@demo.test`
+  - `DEMO_READ_ONLY_EMAILS=owner@demo.test`
+- In this mode, privileged routes and privileged login are locked until
+  session unlock at `/demo/full-access`.
+- Restaurant admin pages are viewable with read-only owner account. Write
+  actions in `/r/{slug}/admin/*` require unlocked full access.
 
 ## Testflöde
 1. Logga in på `/login` med `super@demo.test` / `password`.

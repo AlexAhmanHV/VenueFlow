@@ -2,7 +2,9 @@
 
 use App\Http\Middleware\EnsureRestaurantMembership;
 use App\Http\Middleware\EnsureSuperAdmin;
+use App\Http\Middleware\EnsureDemoReadOnlyAdmin;
 use App\Http\Middleware\EnsureTenantRouteBindings;
+use App\Http\Middleware\EnsureDemoFullAccess;
 use App\Http\Middleware\ResolveRestaurantFromSlug;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -20,6 +22,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'resolve_restaurant' => ResolveRestaurantFromSlug::class,
             'restaurant_member' => EnsureRestaurantMembership::class,
             'tenant_bindings' => EnsureTenantRouteBindings::class,
+            'demo_full_access' => EnsureDemoFullAccess::class,
+            'demo_read_only_admin' => EnsureDemoReadOnlyAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -1,7 +1,7 @@
 ﻿## VenueFlow Additions (Menu Catalog)
 
 - Demo Hub startsida finns på `/` med länkar till alla huvudflöden.
-- Inloggningsuppgifter för demo finns här i README (inte hårdkodat i UI).
+- Public demo mode can lock privileged demo accounts behind `/demo/full-access`.
 - SuperAdmin can now maintain a global dish catalog at `/platform/dish-templates`.
 - SuperAdmin can now maintain a global drink catalog at `/platform/drink-templates`.
 - Restaurant admins/managers can open `/r/{slug}/admin/menu` and add dishes from that catalog to the restaurant menu.
@@ -17,16 +17,21 @@
    - `php artisan migrate:fresh --seed`
 2. Open Demo Hub:
    - `http://127.0.0.1:8000/`
-3. Login credentials:
+3. Public mode (recommended for deployed demo):
+   - set `DEMO_PUBLIC_MODE=true`
+   - set `DEMO_FULL_ACCESS_KEY=<secret>`
+   - unlock privileged demo session at `/demo/full-access`
+4. Login credentials after unlock:
    - `super@demo.test` / `password`
-4. Open platform pages:
+   - Public read-only owner: `owner@demo.test` / `password`
+5. Open platform pages:
    - `/platform/dish-templates`
    - `/platform/drink-templates`
-5. Open restaurant admin pages:
+6. Open restaurant admin pages:
    - `/r/golfbaren/admin/dashboard`
    - `/r/golfbaren/admin/bookings/live-board`
    - `/r/golfbaren/admin/menu`
-6. Verify public pages:
+7. Verify public pages:
    - `/r/golfbaren/menu`
    - `/r/golfbaren/book/details`
 

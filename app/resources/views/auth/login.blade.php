@@ -9,6 +9,15 @@
             <div class="mt-10 rounded-lg bg-white p-8 shadow dark:bg-gray-800">
                 <!-- Session Status -->
                 <x-auth-session-status class="mb-4" :status="session('status')" />
+                @if (config('demo.public_mode'))
+                    <div class="mb-4 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
+                        Privileged demo accounts are locked in public mode.
+                        <a class="font-semibold underline" href="{{ route('demo.access.show') }}">Unlock full demo access</a>.
+                    </div>
+                    <div class="mb-4 rounded-md border border-cyan-300 bg-cyan-50 p-3 text-sm text-cyan-900">
+                        Read-only restaurant owner demo: <span class="font-semibold">owner@demo.test / password</span>
+                    </div>
+                @endif
                 
                 <form method="POST" action="{{ route('login') }}" class="space-y-6">
                     @csrf
@@ -55,10 +64,12 @@
                     </div>
                 </form>
 
+                @if (Route::has('register'))
                 <p class="mt-10 text-center text-sm text-gray-500">
                     Inte medlem?
                     <a href="{{ route('register') }}" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Registrera dig här</a>
                 </p>
+                @endif
             </div>
         </div>
     </div>

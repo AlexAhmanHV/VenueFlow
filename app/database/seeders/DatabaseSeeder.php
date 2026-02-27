@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\MembershipRole;
 use App\Enums\ResourceType;
+use App\Enums\StaffRole;
 use App\Models\DishTemplate;
 use App\Models\DrinkTemplate;
 use App\Models\MenuItem;
@@ -61,6 +62,20 @@ class DatabaseSeeder extends Seeder
         RestaurantMembership::updateOrCreate(
             ['restaurant_id' => $restaurant->id, 'user_id' => $super->id],
             ['role' => MembershipRole::RESTAURANT_ADMIN, 'staff_role' => null]
+        );
+
+        $owner = User::updateOrCreate(
+            ['email' => 'owner@demo.test'],
+            [
+                'name' => 'Demo Restaurant Owner',
+                'password' => Hash::make('password'),
+                'is_super_admin' => false,
+            ]
+        );
+
+        RestaurantMembership::updateOrCreate(
+            ['restaurant_id' => $restaurant->id, 'user_id' => $owner->id],
+            ['role' => MembershipRole::STAFF, 'staff_role' => StaffRole::MANAGER]
         );
 
         $restaurant->resources()->delete();

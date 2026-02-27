@@ -67,10 +67,16 @@
                                         <label for="party_size" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Antal gäster</label>
                                         <input type="number" id="party_size" name="party_size" min="1" max="50" value="{{ $partySize }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm" required>
                                     </div>
-                                    <div class="sm:col-span-2">
-                                        <label for="note" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Anteckning (valfritt)</label>
-                                        <textarea id="note" name="note" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"></textarea>
-                                    </div>
+                                    @if (! config('demo.public_mode') || ! config('demo.restrict_public_notes'))
+                                        <div class="sm:col-span-2">
+                                            <label for="note" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Anteckning (valfritt)</label>
+                                            <textarea id="note" name="note" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"></textarea>
+                                        </div>
+                                    @else
+                                        <div class="sm:col-span-2 rounded-md border border-gray-200 bg-gray-50 p-3 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                                            Fri text ar avstangd i publik demo.
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                             
@@ -106,10 +112,12 @@
                                                 Serveringstid kan väljas när minst ett bord är bokat.
                                             </p>
                                         @endif
-                                        <div>
-                                            <label for="preorder_note" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Anteckning för förbeställning (valfritt)</label>
-                                            <textarea id="preorder_note" name="preorder_note" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"></textarea>
-                                        </div>
+                                        @if (! config('demo.public_mode') || ! config('demo.restrict_public_notes'))
+                                            <div>
+                                                <label for="preorder_note" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Anteckning för förbeställning (valfritt)</label>
+                                                <textarea id="preorder_note" name="preorder_note" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"></textarea>
+                                            </div>
+                                        @endif
                                     </div>
                                 </details>
                             </div>

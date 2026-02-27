@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicSite\BookingController as PublicBookingController;
 use App\Http\Controllers\PublicSite\RestaurantController as PublicRestaurantController;
 use App\Http\Controllers\MediaRestoreController;
+use App\Http\Controllers\DemoAccessController;
 use App\Http\Controllers\RestaurantAdmin\BookingController as AdminBookingController;
 use App\Http\Controllers\RestaurantAdmin\DashboardController;
 use App\Http\Controllers\RestaurantAdmin\MenuController as AdminMenuController;
@@ -15,9 +16,16 @@ use App\Http\Controllers\RestaurantAdmin\ResourceController as AdminResourceCont
 use App\Http\Controllers\RestaurantAdmin\ScheduleController as AdminScheduleController;
 use App\Http\Controllers\RestaurantAdmin\SettingsController as AdminSettingsController;
 use App\Http\Controllers\RestaurantAdmin\StaffController as AdminStaffController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'demo-hub')->name('home');
+Route::get('/demo/full-access', [DemoAccessController::class, 'show'])->name('demo.access.show');
+Route::post('/demo/full-access', [DemoAccessController::class, 'store'])
+    ->middleware('throttle:6,1')
+    ->name('demo.access.store');
+Route::post('/demo/full-access/revoke', [DemoAccessController::class, 'revoke'])
+    ->name('demo.access.revoke');
 
 Route::middleware(['resolve_restaurant'])
     ->prefix('/r/{slug}')
@@ -37,7 +45,7 @@ Route::middleware(['resolve_restaurant'])
         Route::get('/cancel', [PublicBookingController::class, 'cancel'])->name('public.booking.cancel');
     });
 
-Route::middleware(['auth', 'verified', 'super_admin'])
+Route::middleware(['auth', 'verified', 'super_admin', 'demo_full_access'])
     ->prefix('/platform/restaurants')
     ->group(function () {
         Route::get('/', [PlatformRestaurantController::class, 'index'])->name('platform.restaurants.index');
@@ -54,7 +62,7 @@ Route::middleware(['auth', 'verified'])
     ->post('/media/restore/{token}', MediaRestoreController::class)
     ->name('media.restore');
 
-Route::middleware(['auth', 'verified', 'super_admin'])
+Route::middleware(['auth', 'verified', 'super_admin', 'demo_full_access'])
     ->prefix('/platform/dish-templates')
     ->group(function () {
         Route::get('/', [PlatformDishTemplateController::class, 'index'])->name('platform.dish-templates.index');
@@ -63,7 +71,7 @@ Route::middleware(['auth', 'verified', 'super_admin'])
         Route::delete('/{dishTemplate}', [PlatformDishTemplateController::class, 'destroy'])->name('platform.dish-templates.destroy');
     });
 
-Route::middleware(['auth', 'verified', 'super_admin'])
+Route::middleware(['auth', 'verified', 'super_admin', 'demo_full_access'])
     ->prefix('/platform/drink-templates')
     ->group(function () {
         Route::get('/', [PlatformDrinkTemplateController::class, 'index'])->name('platform.drink-templates.index');
@@ -72,7 +80,7 @@ Route::middleware(['auth', 'verified', 'super_admin'])
         Route::delete('/{drinkTemplate}', [PlatformDrinkTemplateController::class, 'destroy'])->name('platform.drink-templates.destroy');
     });
 
-Route::middleware(['auth', 'verified', 'resolve_restaurant:any', 'restaurant_member', 'tenant_bindings'])
+Route::middleware(['auth', 'verified', 'demo_read_only_admin', 'resolve_restaurant:any', 'restaurant_member', 'tenant_bindings'])
     ->prefix('/r/{slug}/admin')
     ->group(function () {
         Route::get('/dashboard', DashboardController::class)->name('restaurant.admin.dashboard');
@@ -149,8 +157,19 @@ Route::middleware(['auth', 'verified', 'resolve_restaurant:any', 'restaurant_mem
     });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return redirect()->route('platform.restaurants.index');
+    Route::get('/dashboard', function (Request $request) {
+        $user = $request->user();
+
+        if ($user?->is_super_admin) {
+            return redirect()->route('platform.restaurants.index');
+        }
+
+        $membership = $user?->memberships()->with('restaurant')->first();
+        if ($membership?->restaurant?->slug) {
+            return redirect()->route('restaurant.admin.dashboard', $membership->restaurant->slug);
+        }
+
+        return redirect()->route('home');
     })->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
