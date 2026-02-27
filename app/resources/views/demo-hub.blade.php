@@ -20,15 +20,16 @@
                 <p class="text-sm uppercase tracking-[0.2em] text-slate-500">Portfolio Demo</p>
                 <h1 class="mt-2 text-3xl font-bold sm:text-4xl">VenueFlow Demo Hub</h1>
                 <p class="mt-3 max-w-3xl text-sm text-slate-600 sm:text-base">
-                    Utforska publika bokningsflodet direkt. Privilegierade admin-vyer ar lasta i publik demo.
+                    Utforska publika bokningsflödet direkt. Privilegierade admin-vyer är låsta i publik demo.
                 </p>
                 @if (config('demo.public_mode'))
                     <div class="mt-4 rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
-                        Full admin/superadmin-demo kraver separat access key.
-                        <a class="font-semibold underline" href="{{ route('demo.access.show') }}">Las upp full demo</a>.
+                        Full admin/superadmin kräver access key.
+                        Gå till <span class="font-semibold">/demo/full-access</span>, ange nyckeln och logga in igen.
+                        <a class="font-semibold underline" href="{{ route('demo.access.show') }}">Lås upp full demo</a>.
                     </div>
                     <div class="mt-3 rounded-md border border-cyan-300 bg-cyan-50 p-4 text-sm text-cyan-900">
-                        Read-only restaurangagare:
+                        Read-only restaurangägare:
                         <span class="font-semibold">owner@demo.test / password</span>
                     </div>
                 @endif
@@ -36,11 +37,11 @@
 
             <div class="mt-6 grid gap-4 lg:grid-cols-3">
                 <article class="vf-card p-5">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-emerald-700">1. Gastflode</p>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-emerald-700">1. Gästflöde</p>
                     <h2 class="mt-2 text-xl font-semibold">Publik bokning</h2>
-                    <p class="mt-2 text-sm text-slate-600">Testa meny, aktiviteter, bokning utan inloggning och bekraftelseflode.</p>
+                    <p class="mt-2 text-sm text-slate-600">Testa meny, aktiviteter, bokning utan inloggning och bekräftelseflöde.</p>
                     <div class="mt-4 flex flex-wrap gap-2">
-                        <a class="vf-btn-primary" href="{{ route('public.landing', 'golfbaren') }}">Oppna restaurangsida</a>
+                        <a class="vf-btn-primary" href="{{ route('public.landing', 'golfbaren') }}">Öppna restaurangsida</a>
                         <a class="vf-btn-secondary" href="{{ route('public.booking.create', 'golfbaren') }}">Boka direkt</a>
                     </div>
                 </article>
@@ -59,10 +60,10 @@
                 <article class="vf-card p-5">
                     <p class="text-xs font-semibold uppercase tracking-wide text-violet-700">3. SuperAdmin</p>
                     <h2 class="mt-2 text-xl font-semibold">Plattform</h2>
-                    <p class="mt-2 text-sm text-slate-600">Hantera restauranger, aktiviteter samt ratt- och dryckeskatalog.</p>
+                    <p class="mt-2 text-sm text-slate-600">Hantera restauranger, aktiviteter samt rätt- och dryckeskatalog.</p>
                     <div class="mt-4 flex flex-wrap gap-2">
                         <a class="vf-btn-primary" href="{{ route('platform.restaurants.index') }}">Restauranger</a>
-                        <a class="vf-btn-secondary" href="{{ route('platform.dish-templates.index') }}">Rattkatalog</a>
+                        <a class="vf-btn-secondary" href="{{ route('platform.dish-templates.index') }}">Rättkatalog</a>
                         <a class="vf-btn-secondary" href="{{ route('platform.drink-templates.index') }}">Dryckeskatalog</a>
                     </div>
                 </article>
@@ -71,10 +72,10 @@
             <div class="mt-6 vf-card p-5">
                 <h3 class="text-lg font-semibold">Snabbtest</h3>
                 <ol class="mt-3 list-decimal space-y-1 pl-5 text-sm text-slate-700">
-                    <li>Oppna publik sida och skapa en bokning pa Golfbaren.</li>
-                    <li>Las upp full demo om du vill testa admin/superadmin.</li>
+                    <li>Öppna publik sida och skapa en bokning på Golfbaren.</li>
+                    <li>Lås upp full demo via <span class="font-semibold">/demo/full-access</span> om du vill testa admin/superadmin.</li>
                     <li>Logga in och kontrollera bokningen i live board.</li>
-                    <li>Oppna plattformssidor och lagg till mallratt eller dryckmall.</li>
+                    <li>Öppna plattformssidor och lägg till mallrätt eller dryckmall.</li>
                 </ol>
             </div>
         </section>
