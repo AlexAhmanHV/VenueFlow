@@ -27,6 +27,12 @@ COPY app ./
 COPY --from=vendor /app/vendor ./vendor
 COPY --from=frontend /app/public/build ./public/build
 
+RUN mkdir -p storage/framework/views \
+    storage/framework/cache \
+    storage/framework/sessions \
+    storage/logs \
+    bootstrap/cache
+
 RUN php artisan storage:link || true
 
 EXPOSE 10000
