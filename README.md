@@ -44,6 +44,7 @@
   - Root Directory: leave empty (repo root)
   - Build Command: leave empty (Dockerfile handles build)
   - Start Command: leave empty (Dockerfile CMD handles start)
+  - Environment var: set `APP_URL` to your public `https://...` Render URL
 - Use this Post Deploy Command on Render:
   - `php artisan migrate --force && php artisan db:seed --class=DemoSeeder --force`
 - Important:
