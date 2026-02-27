@@ -33,6 +33,12 @@
 ### Render + Supabase (Persistent Demo Data)
 
 - Supabase data is persistent, so you should **not** run destructive reset commands in deploy.
+- This repository includes a root `Dockerfile` so Render should run as a **Docker Web Service** (not Node runtime).
+- Render setup:
+  - Runtime/Environment: `Docker`
+  - Root Directory: leave empty (repo root)
+  - Build Command: leave empty (Dockerfile handles build)
+  - Start Command: leave empty (Dockerfile CMD handles start)
 - Use this Post Deploy Command on Render:
   - `php artisan migrate --force && php artisan db:seed --class=DemoSeeder --force`
 - Important:
