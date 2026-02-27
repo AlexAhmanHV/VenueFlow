@@ -166,8 +166,12 @@
                         </div>
                     </main>
 
-                    <footer class="py-16 text-center text-sm text-black dark:text-white/70">
-                        Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+                    <footer class="py-16">
+                        <div class="mx-auto flex w-full max-w-4xl items-center justify-center gap-2 text-sm text-black dark:text-white/70">
+                            <img src="{{ asset('favicon.ico') }}" alt="VenueFlow logo" class="h-5 w-5 rounded">
+                            <span>Skapad av</span>
+                            <a href="https://alexahman.se" target="_blank" rel="noopener noreferrer" class="font-semibold hover:text-indigo-600 dark:hover:text-indigo-400">AlexAhman.se</a>
+                        </div>
                     </footer>
                 </div>
             </div>

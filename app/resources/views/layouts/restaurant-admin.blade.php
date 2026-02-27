@@ -104,6 +104,13 @@
                     {{ $slot }}
                 </div>
             </main>
+            <footer class="border-t border-gray-200 bg-white px-4 py-4 dark:border-gray-700 dark:bg-gray-800">
+                <div class="mx-auto flex w-full max-w-4xl items-center justify-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+                    <img src="{{ asset('favicon.ico') }}" alt="VenueFlow logo" class="h-5 w-5 rounded">
+                    <span>Skapad av</span>
+                    <a href="https://alexahman.se" target="_blank" rel="noopener noreferrer" class="font-semibold text-gray-800 hover:text-indigo-600 dark:text-gray-100 dark:hover:text-indigo-400">AlexAhman.se</a>
+                </div>
+            </footer>
         </div>
     </div>
 </body>
