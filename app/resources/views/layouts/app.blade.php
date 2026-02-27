@@ -55,10 +55,10 @@
         <div class="relative min-h-screen overflow-x-hidden bg-gradient-to-b from-slate-100 via-slate-50 to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 dark:text-white">
             @if($restaurant)
                 <div
-                    class="pointer-events-none absolute inset-0 bg-cover bg-center opacity-30"
+                    class="pointer-events-none absolute inset-0 bg-cover bg-center opacity-50 saturate-125 contrast-125"
                     style="background-image: url('{{ asset($bgImagePath) }}');"
                 ></div>
-                <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/60 via-slate-50/65 to-white/80 dark:from-slate-900/70 dark:via-slate-900/75 dark:to-slate-950/85"></div>
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/40 via-slate-50/50 to-white/65 dark:from-slate-900/55 dark:via-slate-900/65 dark:to-slate-950/75"></div>
             @endif
 
             <div class="pointer-events-none absolute -left-20 top-24 h-72 w-72 rounded-full bg-emerald-300/20 blur-3xl"></div>

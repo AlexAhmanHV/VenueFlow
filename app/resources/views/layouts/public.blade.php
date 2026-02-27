@@ -56,10 +56,10 @@
 
         <div class="relative min-h-screen overflow-x-hidden bg-gray-50 dark:bg-gray-900">
             <div
-                class="pointer-events-none absolute inset-0 bg-cover bg-center opacity-35"
+                class="pointer-events-none absolute inset-0 bg-cover bg-center opacity-55 saturate-125 contrast-125"
                 style="background-image: url('{{ asset($bgImagePath) }}');"
             ></div>
-            <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/55 via-white/60 to-slate-50/75 dark:from-slate-900/70 dark:via-slate-900/75 dark:to-slate-950/85"></div>
+            <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/35 via-white/45 to-slate-50/60 dark:from-slate-900/50 dark:via-slate-900/60 dark:to-slate-950/70"></div>
 
             <!-- Page Content -->
             <main class="relative z-10">
