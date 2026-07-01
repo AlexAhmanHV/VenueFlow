@@ -16,6 +16,9 @@
                 <a href="{{ route('public.menu', $restaurant->slug) }}" class="rounded-lg bg-white/90 px-8 py-4 text-center text-lg font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-white dark:bg-gray-800 dark:text-white dark:ring-gray-600">
                     Se menyn
                 </a>
+                <a href="{{ route('public.waitlist.create', $restaurant->slug) }}" class="rounded-lg bg-white/90 px-8 py-4 text-center text-base font-medium text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-white dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600">
+                    Inga tider? Ställ dig i kö
+                </a>
             </div>
 
             <div class="mx-auto max-w-md rounded-xl border border-gray-200/70 bg-white/70 p-6 text-left dark:border-gray-700 dark:bg-gray-800/70">

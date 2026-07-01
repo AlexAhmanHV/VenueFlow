@@ -6,8 +6,11 @@ use App\Http\Controllers\Platform\DrinkTemplateController as PlatformDrinkTempla
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicSite\BookingController as PublicBookingController;
 use App\Http\Controllers\PublicSite\RestaurantController as PublicRestaurantController;
+use App\Http\Controllers\PublicSite\QrCodeController as PublicQrCodeController;
+use App\Http\Controllers\PublicSite\WaitlistController as PublicWaitlistController;
 use App\Http\Controllers\MediaRestoreController;
 use App\Http\Controllers\DemoAccessController;
+use App\Http\Controllers\RestaurantAdmin\AnalyticsController;
 use App\Http\Controllers\RestaurantAdmin\BookingController as AdminBookingController;
 use App\Http\Controllers\RestaurantAdmin\DashboardController;
 use App\Http\Controllers\RestaurantAdmin\MenuController as AdminMenuController;
@@ -43,6 +46,11 @@ Route::middleware(['resolve_restaurant'])
             ->name('public.booking.store');
         Route::get('/booking/{public_id}', [PublicBookingController::class, 'show'])->name('public.booking.show');
         Route::get('/cancel', [PublicBookingController::class, 'cancel'])->name('public.booking.cancel');
+        Route::get('/waitlist', [PublicWaitlistController::class, 'create'])->name('public.waitlist.create');
+        Route::post('/waitlist', [PublicWaitlistController::class, 'store'])
+            ->middleware('throttle:6,1')
+            ->name('public.waitlist.store');
+        Route::get('/qr', PublicQrCodeController::class)->name('public.qr');
     });
 
 Route::middleware(['auth', 'verified', 'super_admin', 'demo_full_access'])
@@ -137,6 +145,8 @@ Route::middleware(['auth', 'verified', 'demo_read_only_admin', 'resolve_restaura
         Route::delete('/menu/{menu}', [AdminMenuController::class, 'destroy'])
             ->middleware('restaurant_member:MANAGER')
             ->name('restaurant.admin.menu.destroy');
+
+        Route::get('/analytics', AnalyticsController::class)->name('restaurant.admin.analytics');
 
         Route::get('/bookings', [AdminBookingController::class, 'index'])->name('restaurant.admin.bookings.index');
         Route::get('/bookings/live-board', [AdminBookingController::class, 'liveBoard'])->name('restaurant.admin.bookings.live');
