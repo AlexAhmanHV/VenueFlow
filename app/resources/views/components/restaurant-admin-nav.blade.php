@@ -25,6 +25,7 @@
             <a class="vf-btn-secondary" href="{{ route('restaurant.admin.dashboard', $restaurant->slug) }}">Dashboard</a>
             <a class="vf-btn-secondary" href="{{ route('restaurant.admin.operations', $restaurant->slug) }}">Driftvy</a>
             <a class="vf-btn-secondary" href="{{ route('restaurant.admin.bookings.live', $restaurant->slug) }}">Live board</a>
+            <a class="vf-btn-secondary" href="{{ route('restaurant.admin.analytics', $restaurant->slug) }}">Analys</a>
 
             @if($canManage)
                 <a class="vf-btn-secondary" href="{{ route('restaurant.admin.resources.index', $restaurant->slug) }}">Resurser</a>
