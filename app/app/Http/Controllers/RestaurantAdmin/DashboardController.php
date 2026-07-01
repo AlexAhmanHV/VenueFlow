@@ -21,7 +21,7 @@ class DashboardController extends Controller
 
         $upcomingBookings = GuestBooking::query()
             ->where('restaurant_id', $restaurant->id)
-            ->where('status', 'CONFIRMED')
+            ->where('status', BookingStatus::CONFIRMED->value)
             ->latest()
             ->limit(10)
             ->get();
