@@ -24,6 +24,8 @@ class GuestBooking extends Model
         'note',
         'cancel_token_hash',
         'cancelled_at',
+        'recurrence_rule',
+        'parent_booking_id',
     ];
 
     protected $hidden = [
@@ -66,5 +68,15 @@ class GuestBooking extends Model
     public function notes(): HasMany
     {
         return $this->hasMany(BookingNote::class, 'guest_booking_id');
+    }
+
+    public function parentBooking(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(GuestBooking::class, 'parent_booking_id');
+    }
+
+    public function recurringChildren(): HasMany
+    {
+        return $this->hasMany(GuestBooking::class, 'parent_booking_id');
     }
 }
