@@ -13,7 +13,7 @@ use Illuminate\Http\Response;
 
 class QrCodeController extends Controller
 {
-    public function show(Request $request): Response
+    public function __invoke(Request $request): Response
     {
         $restaurant = $request->attributes->get('restaurant');
 
