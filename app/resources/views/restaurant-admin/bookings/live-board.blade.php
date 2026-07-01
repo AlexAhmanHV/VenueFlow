@@ -102,6 +102,18 @@
         </div>
     </section>
 
+    @push('scripts')
+    <script>
+        (() => {
+            if (window.Echo) {
+                window.Echo.channel(`restaurant.{{ $restaurant->id }}.bookings`)
+                    .listen('.BookingCreated', () => window.location.reload())
+                    .listen('.BookingStatusUpdated', () => window.location.reload());
+            }
+        })();
+    </script>
+    @endpush
+
     <script>
         (() => {
             const statusBox = document.getElementById('move-status');

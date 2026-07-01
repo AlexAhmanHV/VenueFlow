@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\RestaurantAdmin;
 
 use App\Enums\BookingStatus;
+use App\Events\BookingStatusUpdated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RestaurantAdmin\MoveBookingItemRequest;
 use App\Http\Requests\RestaurantAdmin\StoreBookingNoteRequest;
@@ -12,15 +13,17 @@ use App\Models\BookingNote;
 use App\Models\BookingStatusEvent;
 use App\Models\GuestBooking;
 use App\Services\MoveBookingItem;
+use App\Services\WaitlistNotifier;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
-    public function __construct(private readonly MoveBookingItem $moveBookingItem)
-    {
-    }
+    public function __construct(
+        private readonly MoveBookingItem $moveBookingItem,
+        private readonly WaitlistNotifier $waitlistNotifier,
+    ) {}
 
     public function index(Request $request)
     {
@@ -103,6 +106,12 @@ class BookingController extends Controller
             'to_status' => $to->value,
             'actor_user_id' => $request->user()->id,
         ]);
+
+        BookingStatusUpdated::dispatch($booking->fresh());
+
+        if ($to === BookingStatus::CANCELLED) {
+            $this->waitlistNotifier->notifyNext($booking);
+        }
 
         return back()->with('status', 'Status uppdaterad.');
     }

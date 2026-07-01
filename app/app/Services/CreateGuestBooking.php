@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\BookingStatus;
+use App\Events\BookingCreated;
 use App\Models\BookingItem;
 use App\Models\BookingStatusEvent;
 use App\Models\GuestBooking;
@@ -170,6 +171,8 @@ class CreateGuestBooking
         }
 
         $booking->notify(new GuestBookingConfirmedNotification($cancelToken));
+
+        BookingCreated::dispatch($booking);
 
         return $booking;
     }

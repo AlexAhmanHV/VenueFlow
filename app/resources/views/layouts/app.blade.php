@@ -80,6 +80,8 @@
                 {{ $slot }}
             </main>
 
+            @stack('scripts')
+
             <footer class="relative z-10 py-8">
                 <div class="mx-auto flex w-full max-w-4xl items-center justify-center gap-2 text-xs text-slate-600 dark:text-slate-300">
                     <span>Skapad av</span>
