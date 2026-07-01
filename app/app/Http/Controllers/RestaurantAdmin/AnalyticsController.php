@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class AnalyticsController extends Controller
 {
-    public function index(Request $request)
+    public function __invoke(Request $request)
     {
         $restaurant = $request->attributes->get('restaurant');
         $this->authorize('view', $restaurant);
