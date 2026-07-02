@@ -257,6 +257,18 @@
     }
 }
 
+/* ─── Marquee ────────────────────────────────────────────────── */
+@keyframes vf-marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+.vf-marquee-track {
+    animation: vf-marquee 40s linear infinite;
+}
+.vf-marquee-track:hover {
+    animation-play-state: paused;
+}
+
 /* ─── Public / dark theme components ─────────────────────────── */
 .pub-input {
     @apply border border-white/15 text-white placeholder-white/30
