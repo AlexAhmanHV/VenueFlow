@@ -14,6 +14,39 @@
     <style>
         body { font-family: 'Outfit', sans-serif; }
 
+        /* ── Orb background ── */
+        @keyframes dh-orb1 {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            33%       { transform: translate(-80px, 60px) scale(1.08); }
+            66%       { transform: translate(40px, -50px) scale(0.96); }
+        }
+        @keyframes dh-orb2 {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            40%       { transform: translate(70px, -40px) scale(1.06); }
+            75%       { transform: translate(-50px, 70px) scale(0.93); }
+        }
+        @keyframes dh-orb3 {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            50%       { transform: translate(60px, 55px) scale(1.12); }
+        }
+
+        .dh-orb1 { animation: dh-orb1 22s ease-in-out infinite; }
+        .dh-orb2 { animation: dh-orb2 28s ease-in-out infinite; }
+        .dh-orb3 { animation: dh-orb3 18s ease-in-out infinite; }
+
+        /* Grain overlay */
+        .dh-grain::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            pointer-events: none;
+            opacity: 0.035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-size: 160px 160px;
+        }
+
+        /* ── Reveal animations ── */
         @keyframes dh-rise {
             from { opacity: 0; transform: translateY(18px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -30,13 +63,73 @@
         .dh-cell-hover {
             transition: background-color 0.25s ease, border-color 0.25s ease;
         }
+
+        /* ── Buttons ── */
+        .dh-btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #10b981;
+            color: #fff;
+            padding: 12px 24px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            border: none;
+            border-radius: 0;
+            transition: background 0.18s ease, transform 0.12s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .dh-btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0);
+            transition: background 0.18s ease;
+        }
+        .dh-btn-primary:hover { background: #059669; }
+        .dh-btn-primary:hover::after { background: rgba(255,255,255,0.06); }
+        .dh-btn-primary:active { transform: translateY(1px); }
+
+        .dh-btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255,255,255,0.45);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.18s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 2px;
+        }
+        .dh-btn-secondary:hover { color: rgba(255,255,255,0.9); border-color: rgba(255,255,255,0.40); }
+        .dh-btn-secondary .dh-arrow { transition: transform 0.18s ease; }
+        .dh-btn-secondary:hover .dh-arrow { transform: translateX(4px); }
+
+        @media (prefers-reduced-motion: reduce) {
+            .dh-orb1, .dh-orb2, .dh-orb3 { animation: none; }
+            .dh-rise, .dh-rise-2, .dh-rise-3 { animation: none; opacity: 1; transform: none; }
+        }
     </style>
 </head>
-<body class="bg-[#0b0b0b] text-white antialiased">
+<body class="dh-grain bg-[#0b0b0b] text-white antialiased">
 <div class="relative min-h-[100dvh] w-full overflow-x-hidden">
 
+    {{-- Animated background orbs --}}
+    <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        <div class="dh-orb1 absolute -left-40 -top-40 h-[600px] w-[600px] rounded-full blur-[120px]"
+             style="background:radial-gradient(circle, rgba(16,185,129,0.13) 0%, transparent 70%)"></div>
+        <div class="dh-orb2 absolute -right-32 top-1/3 h-[500px] w-[500px] rounded-full blur-[100px]"
+             style="background:radial-gradient(circle, rgba(4,120,87,0.10) 0%, transparent 70%)"></div>
+        <div class="dh-orb3 absolute bottom-0 left-1/3 h-[450px] w-[450px] rounded-full blur-[110px]"
+             style="background:radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 70%)"></div>
+    </div>
+
     {{-- ── NAV ─────────────────────────────────────────────────── --}}
-    <nav class="mx-auto flex max-w-[1440px] items-center justify-between px-5 py-5 sm:px-8 lg:px-12">
+    <nav class="relative z-10 mx-auto flex max-w-[1440px] items-center justify-between px-5 py-5 sm:px-8 lg:px-12">
         <a href="{{ route('home') }}" class="flex items-center gap-3">
             <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500 text-xs font-black text-white">VF</div>
             <span class="text-sm font-bold tracking-tight">VenueFlow</span>
@@ -53,7 +146,7 @@
     </nav>
 
     {{-- ── HERO ─────────────────────────────────────────────────── --}}
-    <section class="mx-auto flex max-w-[1440px] min-h-[calc(100dvh-72px)] flex-col justify-center px-5 pb-16 pt-6 sm:px-8 lg:px-12">
+    <section class="relative z-10 mx-auto flex max-w-[1440px] min-h-[calc(100dvh-72px)] flex-col justify-center px-5 pb-16 pt-6 sm:px-8 lg:px-12">
         <div class="grid items-end gap-12 lg:grid-cols-[1fr_260px] lg:gap-16">
 
             {{-- Headline + CTAs --}}
@@ -64,15 +157,12 @@
                 <p class="mt-7 max-w-[44ch] text-lg leading-relaxed text-white/50">
                     Utforska ett komplett bokningssystem med realtid, köhantering, analys och QR.
                 </p>
-                <div class="mt-9 flex flex-wrap items-center gap-3">
-                    <a href="{{ route('public.landing', 'golfbaren') }}"
-                       class="rounded-xl bg-emerald-500 px-6 py-3 text-sm font-bold text-white transition duration-200 hover:bg-emerald-400 active:scale-[0.98]">
+                <div class="mt-9 flex flex-wrap items-center gap-6">
+                    <a href="{{ route('public.landing', 'golfbaren') }}" class="dh-btn-primary">
                         Starta gästflöde
                     </a>
-                    <a href="{{ route('restaurant.admin.dashboard', 'golfbaren') }}"
-                       class="rounded-xl border border-white/20 px-6 py-3 text-sm font-bold text-white/70 transition duration-200 hover:border-white/40 hover:text-white active:scale-[0.98]"
-                       style="background-color:rgba(255,255,255,0.05)">
-                        Se adminyta
+                    <a href="{{ route('restaurant.admin.dashboard', 'golfbaren') }}" class="dh-btn-secondary">
+                        Se adminyta <span class="dh-arrow">&rarr;</span>
                     </a>
                 </div>
             </div>
@@ -103,15 +193,14 @@
 
     {{-- ── DEMO ACCESS STRIP ────────────────────────────────────── --}}
     @if (config('demo.public_mode'))
-    <div class="mx-auto max-w-[1440px] px-5 pb-10 sm:px-8 lg:px-12">
+    <div class="relative z-10 mx-auto max-w-[1440px] px-5 pb-10 sm:px-8 lg:px-12">
         <div class="flex flex-col justify-between gap-5 rounded-2xl border border-emerald-900/50 p-6 sm:flex-row sm:items-center"
              style="background-color:rgba(4,120,87,0.12)">
             <div>
                 <p class="font-bold text-white">Full admin och superadmin är låst i publik demo.</p>
                 <p class="mt-1 text-sm text-white/40">Gå till /demo/full-access och ange access key för att låsa upp.</p>
             </div>
-            <a href="{{ route('demo.access.show') }}"
-               class="shrink-0 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-400">
+            <a href="{{ route('demo.access.show') }}" class="dh-btn-primary shrink-0">
                 Lås upp full demo
             </a>
         </div>
@@ -119,7 +208,7 @@
     @endif
 
     {{-- ── PATHS BENTO ──────────────────────────────────────────── --}}
-    <section class="mx-auto max-w-[1440px] px-5 py-16 sm:px-8 sm:py-24 lg:px-12">
+    <section class="relative z-10 mx-auto max-w-[1440px] px-5 py-16 sm:px-8 sm:py-24 lg:px-12">
 
         <h2 class="mb-10 text-4xl font-black leading-[1] tracking-tight sm:text-5xl">
             Tre vyer, ett<br>sammankopplat system.
@@ -145,7 +234,8 @@
                               style="background-color:rgba(4,120,87,0.30)">{{ $tag }}</span>
                         @endforeach
                     </div>
-                    <div class="flex items-center gap-2 text-sm font-semibold text-emerald-400">
+                    <div class="flex items-center gap-2 text-sm font-semibold text-emerald-400"
+                         style="border-bottom:1px solid rgba(52,211,153,0.25); padding-bottom:2px; display:inline-flex">
                         <span>Öppna restaurangsida</span>
                         <span class="transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
                     </div>
@@ -193,7 +283,7 @@
     </section>
 
     {{-- ── DEMO ROUTE ───────────────────────────────────────────── --}}
-    <section class="mx-auto max-w-[1440px] border-t px-5 py-16 sm:px-8 sm:py-20 lg:px-12"
+    <section class="relative z-10 mx-auto max-w-[1440px] border-t px-5 py-16 sm:px-8 sm:py-20 lg:px-12"
              style="border-color:rgba(255,255,255,0.08)">
         <div class="grid gap-10 lg:grid-cols-[1fr_1.7fr] lg:items-start lg:gap-20">
             <div>
@@ -217,7 +307,7 @@
     </section>
 
     {{-- ── TECH STACK ───────────────────────────────────────────── --}}
-    <section class="mx-auto max-w-[1440px] border-t px-5 pb-20 pt-16 sm:px-8 sm:pb-28 sm:pt-20 lg:px-12"
+    <section class="relative z-10 mx-auto max-w-[1440px] border-t px-5 pb-20 pt-16 sm:px-8 sm:pb-28 sm:pt-20 lg:px-12"
              style="border-color:rgba(255,255,255,0.08)">
         <div class="grid gap-14 lg:grid-cols-[auto_1fr] lg:items-start lg:gap-24">
             <h2 class="text-2xl font-black tracking-tight lg:max-w-[13ch]">Byggt med moderna verktyg.</h2>
@@ -242,7 +332,7 @@
     </section>
 
     {{-- ── FEATURES + CREDENTIALS ──────────────────────────────── --}}
-    <section class="mx-auto max-w-[1440px] border-t px-5 pb-16 sm:px-8 lg:px-12"
+    <section class="relative z-10 mx-auto max-w-[1440px] border-t px-5 pb-16 sm:px-8 lg:px-12"
              style="border-color:rgba(255,255,255,0.08)">
         <div class="rounded-2xl p-7 sm:p-9" style="background-color:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08)">
             <div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-start">
@@ -274,7 +364,7 @@
     </section>
 
     {{-- ── FOOTER ───────────────────────────────────────────────── --}}
-    <footer class="mx-auto flex max-w-[1440px] items-center justify-between border-t px-5 py-8 text-sm sm:px-8 lg:px-12"
+    <footer class="relative z-10 mx-auto flex max-w-[1440px] items-center justify-between border-t px-5 py-8 text-sm sm:px-8 lg:px-12"
             style="border-color:rgba(255,255,255,0.08)">
         <span class="font-bold text-white/70">VenueFlow</span>
         <span class="text-white/25">
