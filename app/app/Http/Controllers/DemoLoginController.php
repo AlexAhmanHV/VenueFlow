@@ -28,7 +28,7 @@ class DemoLoginController extends Controller
             $user->refresh();
         }
 
-        Auth::login($user, remember: false);
+        Auth::login($user);
 
         $membership = $user->memberships()->with('restaurant')->first();
         if ($membership?->restaurant?->slug) {

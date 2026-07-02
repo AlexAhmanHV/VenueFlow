@@ -13,7 +13,7 @@
 
             <div class="mb-6">
                 <a
-                    href="{{ route('demo.login') }}"
+                    href="/demo-login"
                     class="flex w-full items-center justify-center gap-2 rounded-none py-3 text-sm font-semibold text-emerald-400 transition hover:text-emerald-300 active:scale-[0.98]"
                     style="background-color:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.20)"
                 >
