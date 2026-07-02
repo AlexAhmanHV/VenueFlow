@@ -37,6 +37,21 @@ class DemoLoginController extends Controller
 
     private function seedStaticIfNeeded(): void
     {
+        // Restaurant settings
+        $hasSettings = DB::table('restaurant_settings')->where('restaurant_id', $this->restaurantId)->exists();
+        if (! $hasSettings) {
+            DB::table('restaurant_settings')->insert([
+                'restaurant_id'              => $this->restaurantId,
+                'default_buffer_minutes'     => 10,
+                'slot_interval_minutes'      => 30,
+                'cancellation_cutoff_minutes'=> 60,
+                'max_simultaneous_bookings'  => null,
+                'default_durations'          => json_encode([60, 90, 120]),
+                'created_at'                 => Carbon::now('UTC'),
+                'updated_at'                 => Carbon::now('UTC'),
+            ]);
+        }
+
         // Opening hours (Mon-Sun)
         $hasHours = DB::table('opening_hours')->where('restaurant_id', $this->restaurantId)->exists();
         if (! $hasHours) {
