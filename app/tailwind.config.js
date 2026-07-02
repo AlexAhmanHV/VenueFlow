@@ -13,8 +13,8 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-                display: ['Oswald', ...defaultTheme.fontFamily.sans],
-                body: ['Barlow', ...defaultTheme.fontFamily.sans],
+                display: ['Syne', ...defaultTheme.fontFamily.sans],
+                body: ['DM Sans', ...defaultTheme.fontFamily.sans],
             },
         },
     },

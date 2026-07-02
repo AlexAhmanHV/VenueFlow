@@ -5,11 +5,39 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>{{ $restaurant->name ?? config('app.name', 'VenueFlow') }}</title>
+        <meta name="description" content="Boka {{ $restaurant->name ?? 'aktiviteter och events' }} direkt - utan konto och utan krångel.">
 
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=oswald:400,500,600,700|barlow:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=syne:500,600,700,800|dm-sans:400,500,600&display=swap" rel="stylesheet" />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <style>
+            @keyframes pub-reveal {
+                from { opacity: 0; transform: translateY(16px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes pub-reveal-right {
+                from { opacity: 0; transform: translateY(10px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes pub-pulse-dot {
+                0%, 100% { transform: scale(1); opacity: 1; }
+                50%       { transform: scale(1.6); opacity: 0.4; }
+            }
+            .pub-reveal   { animation: pub-reveal 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+            .pub-reveal-2 { animation: pub-reveal 0.7s 0.1s cubic-bezier(0.16,1,0.3,1) both; }
+            .pub-reveal-3 { animation: pub-reveal 0.7s 0.2s cubic-bezier(0.16,1,0.3,1) both; }
+            .pub-reveal-r { animation: pub-reveal-right 0.8s 0.35s cubic-bezier(0.16,1,0.3,1) both; }
+            .pub-pulse-dot { animation: pub-pulse-dot 2.4s ease-in-out infinite; }
+
+            @media (prefers-reduced-motion: reduce) {
+                .pub-reveal, .pub-reveal-2, .pub-reveal-3, .pub-reveal-r {
+                    animation: none; opacity: 1; transform: none;
+                }
+                .pub-pulse-dot { animation: none; }
+            }
+        </style>
     </head>
     <body class="font-body antialiased">
         @php
@@ -37,33 +65,37 @@
                 : null;
         @endphp
 
-        <div class="pub-shell relative min-h-[100dvh] overflow-x-hidden bg-[#0d0d0d] text-white">
+        <div class="pub-shell relative min-h-[100dvh] overflow-x-hidden bg-[#0c0c0c] text-white">
 
-            {{-- Background image with strong dark overlay --}}
+            {{-- Background image --}}
             @if($bgImagePath)
                 <div
-                    class="pointer-events-none fixed inset-0 bg-cover bg-center bg-no-repeat opacity-30"
-                    style="background-image: url('{{ asset($bgImagePath) }}');"
+                    class="pointer-events-none fixed inset-0 bg-cover bg-center bg-no-repeat"
+                    style="background-image: url('{{ asset($bgImagePath) }}'); opacity: 0.18;"
                     aria-hidden="true"
                 ></div>
             @endif
-            <div class="pointer-events-none fixed inset-0 bg-gradient-to-b from-black/80 via-black/40 to-[#0d0d0d]" aria-hidden="true"></div>
 
-            {{-- Subtle red ambient glow top-right --}}
-            <div class="pointer-events-none fixed right-0 top-0 h-[600px] w-[600px] -translate-y-1/4 translate-x-1/4 rounded-full bg-red-900/20 blur-[120px]" aria-hidden="true"></div>
+            {{-- Gradient vignette - darker at edges, lighter center to let photo breathe --}}
+            <div
+                class="pointer-events-none fixed inset-0"
+                style="background: linear-gradient(to bottom, rgba(12,12,12,0.85) 0%, rgba(12,12,12,0.45) 40%, rgba(12,12,12,0.75) 100%);"
+                aria-hidden="true"
+            ></div>
 
             <main class="relative z-10">
                 {{ $slot }}
             </main>
 
-            <footer class="relative z-10 border-t border-white/10 py-8">
-                <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
-                    <p class="font-display text-xs uppercase tracking-[0.2em] text-white/40">
+            <footer class="relative z-10 border-t py-7" style="border-color:rgba(255,255,255,0.07)">
+                <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 sm:flex-row sm:px-10">
+                    <p class="font-display text-[11px] font-semibold tracking-[0.18em] text-white/25" style="text-transform:uppercase">
                         {{ $restaurant->name ?? 'VenueFlow' }}
                     </p>
-                    <p class="text-xs text-white/30">
+                    <p class="text-xs text-white/25">
                         Bokningssystem av
-                        <a href="https://alexahman.se" target="_blank" rel="noopener noreferrer" class="text-white/50 transition hover:text-white">
+                        <a href="https://alexahman.se" target="_blank" rel="noopener noreferrer"
+                           class="text-white/40 underline underline-offset-4 transition hover:text-white/70">
                             AlexAhman.se
                         </a>
                     </p>
