@@ -9,7 +9,7 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600|syne:600,700,800&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -35,8 +35,8 @@
                 <img class="absolute inset-0 h-full w-full object-cover" src="https://images.unsplash.com/photo-1560439514-4e9645039924?q=80&w=2073&auto=format&fit=crop" alt="Background">
                 <div class="absolute inset-0 bg-gradient-to-tr from-emerald-900/80 to-slate-900/40 mix-blend-multiply"></div>
                 <div class="absolute bottom-0 left-0 p-20 text-white">
-                    <h3 class="text-3xl font-bold">Manage your venues with ease.</h3>
-                    <p class="mt-4 text-lg text-emerald-100">Streamline bookings, manage staff, and grow your business with VenueFlow.</p>
+                    <h3 class="text-3xl font-bold">Ditt bokningssystem, live.</h3>
+                    <p class="mt-4 text-lg text-emerald-100">Hantera bokningar, resurser och personal i realtid med VenueFlow.</p>
                 </div>
             </div>
         </div>

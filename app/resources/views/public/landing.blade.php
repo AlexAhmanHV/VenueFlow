@@ -89,7 +89,7 @@
                             class="inline-flex items-center gap-1.5 text-xs font-medium text-white/45 transition hover:text-white/70"
                             style="border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:1px"
                         >
-                            Stall dig i ko
+                            Ställ dig i kö
                         </a>
                     </div>
                     @endif
@@ -104,9 +104,9 @@
         <div class="mx-auto max-w-6xl px-6 py-12 sm:px-10 lg:px-8">
             <ol class="grid gap-0 divide-y sm:grid-cols-3 sm:divide-x sm:divide-y-0" style="--tw-divide-opacity:1; border-color:rgba(255,255,255,0.07)">
                 @foreach([
-                    ['Valj aktivitet', 'Bla bland tillgangliga aktiviteter och tider.'],
-                    ['Ange uppgifter', 'Namn, antal personer - klart pa 30 sekunder.'],
-                    ['Bekraftelse direkt', 'Fa bokning bekraftad utan konto eller vantan.'],
+                    ['Välj aktivitet', 'Bläddra bland tillgängliga aktiviteter och tider.'],
+                    ['Ange uppgifter', 'Namn, antal personer - klart på 30 sekunder.'],
+                    ['Bekräftelse direkt', 'Få bokning bekräftad utan konto eller väntan.'],
                 ] as $i => [$step, $desc])
                 <li class="px-0 py-8 sm:px-7 sm:py-0 sm:first:pl-0 sm:last:pr-0">
                     <p class="text-[11px] font-medium text-white/20" style="letter-spacing:0.12em; text-transform:uppercase">{{ $i + 1 }}/3</p>
@@ -151,7 +151,7 @@
                         onmouseover="this.style.color='#c1121f'"
                         onmouseout="this.style.color='rgba(193,18,31,0.85)'"
                     >
-                        Stall dig i ko &rarr;
+                        Ställ dig i kö &rarr;
                     </a>
                 </div>
 

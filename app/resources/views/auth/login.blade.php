@@ -1,76 +1,72 @@
 <x-public-layout>
-    <div class="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4 dark:bg-gray-900">
-        <div class="w-full max-w-md">
-            <div class="text-center">
-                <a href="/" class="text-3xl font-bold text-gray-900 dark:text-white">VenueFlow</a>
-                <h2 class="mt-4 text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">Logga in på ditt konto</h2>
+    <div class="flex min-h-[100dvh] flex-col items-center justify-center px-5 py-16">
+        <div class="w-full max-w-sm">
+
+            <div class="mb-8">
+                <a href="/" class="inline-flex items-center gap-2.5">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500 text-[11px] font-black text-white">VF</div>
+                    <span class="font-display text-base font-bold tracking-tight text-white">VenueFlow</span>
+                </a>
+                <h1 class="font-display mt-6 text-2xl font-bold tracking-tight text-white">Logga in</h1>
+                <p class="mt-1 text-sm text-white/40">Hantera bokningar, resurser och personal.</p>
             </div>
-            
-            <div class="mt-10 rounded-lg bg-white p-8 shadow dark:bg-gray-800">
-                <!-- Session Status -->
-                <x-auth-session-status class="mb-4" :status="session('status')" />
-                @if (config('demo.public_mode'))
-                    <div class="mb-4 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
-                        Privileged demo accounts are locked in public mode.
-                        <a class="font-semibold underline" href="{{ route('demo.access.show') }}">Unlock full demo access</a>.
-                    </div>
-                    <div class="mb-4 rounded-md border border-cyan-300 bg-cyan-50 p-3 text-sm text-cyan-900">
-                        Read-only restaurant owner demo: <span class="font-semibold">owner@demo.test / password</span>
-                    </div>
-                @endif
-                
-                <form method="POST" action="{{ route('login') }}" class="space-y-6">
-                    @csrf
 
-                    <!-- Email Address -->
-                    <div>
-                        <label for="email" class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200">E-postadress</label>
-                        <div class="mt-2">
-                            <input id="email" name="email" type="email" autocomplete="email" required value="{{ old('email') }}"
-                                   class="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-indigo-500 sm:text-sm sm:leading-6">
-                        </div>
-                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                    </div>
+            @if (config('demo.public_mode'))
+                <div class="mb-5 rounded-xl p-4 text-sm" style="background-color:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.20)">
+                    <p class="font-semibold text-emerald-400">Demo-konto (skrivskyddat)</p>
+                    <p class="mt-1 text-white/50">owner@demo.test &nbsp;/&nbsp; password</p>
+                </div>
+                <div class="mb-5 rounded-xl p-4 text-sm" style="background-color:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08)">
+                    <p class="text-white/50">Fullständig demo kräver access key.</p>
+                    <a href="{{ route('demo.access.show') }}" class="mt-1 inline-block font-semibold text-emerald-400 underline underline-offset-4 transition hover:text-emerald-300">
+                        Lås upp full demo
+                    </a>
+                </div>
+            @endif
 
-                    <!-- Password -->
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <label for="password" class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200">Lösenord</label>
-                            @if (Route::has('password.request'))
-                                <div class="text-sm">
-                                    <a href="{{ route('password.request') }}" class="font-semibold text-indigo-600 hover:text-indigo-500">Glömt lösenord?</a>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="mt-2">
-                             <input id="password" name="password" type="password" autocomplete="current-password" required
-                                   class="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-indigo-500 sm:text-sm sm:leading-6">
-                        </div>
-                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                    </div>
+            <x-auth-session-status class="mb-4" :status="session('status')" />
 
-                    <!-- Remember Me -->
+            <form method="POST" action="{{ route('login') }}" class="space-y-5">
+                @csrf
+
+                <div>
+                    <label for="email" class="block text-xs font-semibold text-white/40" style="letter-spacing:0.08em; text-transform:uppercase">E-postadress</label>
+                    <input id="email" name="email" type="email" autocomplete="email" required value="{{ old('email') }}"
+                           class="mt-2 block w-full rounded-none border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-white placeholder-white/20 transition focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                </div>
+
+                <div>
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <input id="remember_me" name="remember" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                            <label for="remember_me" class="ml-3 block text-sm leading-6 text-gray-900 dark:text-gray-200">Kom ihåg mig</label>
-                        </div>
+                        <label for="password" class="block text-xs font-semibold text-white/40" style="letter-spacing:0.08em; text-transform:uppercase">Lösenord</label>
+                        @if (Route::has('password.request'))
+                            <a href="{{ route('password.request') }}" class="text-xs font-medium text-white/35 transition hover:text-white/70">Glömt lösenord?</a>
+                        @endif
                     </div>
+                    <input id="password" name="password" type="password" autocomplete="current-password" required
+                           class="mt-2 block w-full rounded-none border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-white placeholder-white/20 transition focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                </div>
 
-                    <div>
-                        <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            Logga in
-                        </button>
-                    </div>
-                </form>
+                <div class="flex items-center gap-2.5">
+                    <input id="remember_me" name="remember" type="checkbox"
+                           class="h-4 w-4 rounded border-white/20 bg-white/5 text-emerald-500 focus:ring-emerald-500">
+                    <label for="remember_me" class="text-sm text-white/50">Kom ihåg mig</label>
+                </div>
 
-                @if (Route::has('register'))
-                <p class="mt-10 text-center text-sm text-gray-500">
-                    Inte medlem?
-                    <a href="{{ route('register') }}" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Registrera dig här</a>
-                </p>
-                @endif
-            </div>
+                <button type="submit"
+                        class="mt-2 flex w-full justify-center rounded-none bg-emerald-500 px-3 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600 active:scale-[0.98]">
+                    Logga in
+                </button>
+            </form>
+
+            @if (Route::has('register'))
+            <p class="mt-8 text-center text-sm text-white/30">
+                Inget konto?
+                <a href="{{ route('register') }}" class="font-semibold text-white/60 underline underline-offset-4 transition hover:text-white">Registrera dig</a>
+            </p>
+            @endif
+
         </div>
     </div>
 </x-public-layout>
