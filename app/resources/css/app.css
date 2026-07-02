@@ -259,10 +259,10 @@
 
 /* ─── Public / dark theme components ─────────────────────────── */
 .pub-input {
-    @apply border border-white/15 bg-white/8 text-white placeholder-white/30
+    @apply border border-white/15 text-white placeholder-white/30
            focus:border-red-600 focus:ring-red-600
            rounded-none py-2.5 text-sm;
-    background-color: rgba(255,255,255,0.06);
+    background-color: rgba(255, 255, 255, 0.06);
 }
 
 .pub-input option {
@@ -281,9 +281,13 @@
     @apply inline-flex items-center justify-center gap-2
            border border-white/25 px-6 py-3
            font-display text-sm font-semibold uppercase tracking-widest text-white/80
-           transition duration-200 hover:border-white/50 hover:bg-white/8 hover:text-white active:scale-[0.98]
+           transition duration-200 hover:border-white/50 hover:text-white active:scale-[0.98]
            focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black;
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.pub-btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
 .pub-label {
