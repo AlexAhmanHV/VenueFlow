@@ -11,18 +11,19 @@
                 <p class="mt-1 text-sm text-white/40">Hantera bokningar, resurser och personal.</p>
             </div>
 
-            @if (config('demo.public_mode'))
-                <div class="mb-5 rounded-xl p-4 text-sm" style="background-color:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.20)">
-                    <p class="font-semibold text-emerald-400">Demo-konto (skrivskyddat)</p>
-                    <p class="mt-1 text-white/50">owner@demo.test &nbsp;/&nbsp; password</p>
-                </div>
-                <div class="mb-5 rounded-xl p-4 text-sm" style="background-color:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08)">
-                    <p class="text-white/50">Fullständig demo kräver access key.</p>
-                    <a href="{{ route('demo.access.show') }}" class="mt-1 inline-block font-semibold text-emerald-400 underline underline-offset-4 transition hover:text-emerald-300">
-                        Lås upp full demo
-                    </a>
-                </div>
-            @endif
+            <div class="mb-6">
+                <a
+                    href="{{ route('demo.login') }}"
+                    class="flex w-full items-center justify-center gap-2 rounded-none py-3 text-sm font-semibold text-emerald-400 transition hover:text-emerald-300 active:scale-[0.98]"
+                    style="background-color:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.20)"
+                >
+                    <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" opacity=".4"/>
+                        <path d="M8 5a1 1 0 0 1 1 1v2h2a1 1 0 1 1 0 2H8a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" fill="currentColor"/>
+                    </svg>
+                    Prova som demo
+                </a>
+            </div>
 
             <x-auth-session-status class="mb-4" :status="session('status')" />
 

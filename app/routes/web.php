@@ -10,6 +10,7 @@ use App\Http\Controllers\PublicSite\QrCodeController as PublicQrCodeController;
 use App\Http\Controllers\PublicSite\WaitlistController as PublicWaitlistController;
 use App\Http\Controllers\MediaRestoreController;
 use App\Http\Controllers\DemoAccessController;
+use App\Http\Controllers\DemoLoginController;
 use App\Http\Controllers\RestaurantAdmin\AnalyticsController;
 use App\Http\Controllers\RestaurantAdmin\BookingController as AdminBookingController;
 use App\Http\Controllers\RestaurantAdmin\DashboardController;
@@ -23,6 +24,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'demo-hub')->name('home');
+Route::middleware('guest')->get('/demo-login', DemoLoginController::class)->name('demo.login');
 Route::get('/demo/full-access', [DemoAccessController::class, 'show'])->name('demo.access.show');
 Route::post('/demo/full-access', [DemoAccessController::class, 'store'])
     ->middleware('throttle:6,1')
