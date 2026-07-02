@@ -38,7 +38,11 @@
         <div class="rounded-2xl border border-black/[0.08] bg-white p-6 dark:border-white/10 dark:bg-slate-800">
             <div class="flex items-start justify-between gap-4">
                 <p class="font-display text-5xl font-black tabular-nums tracking-tight text-slate-900 dark:text-white">
-                    {{ $occupancyRate }}<span class="text-2xl font-bold text-slate-300 dark:text-slate-600">%</span>
+                    @if($occupancyRate !== null)
+                        {{ $occupancyRate }}<span class="text-2xl font-bold text-slate-300 dark:text-slate-600">%</span>
+                    @else
+                        <span class="text-3xl text-slate-300 dark:text-slate-600">–</span>
+                    @endif
                 </p>
                 @if($noShowsToday > 0)
                     <div class="shrink-0 text-right">
@@ -50,7 +54,7 @@
             <div class="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
                 <div
                     class="h-full rounded-full bg-emerald-600 transition-all duration-700"
-                    style="width: {{ min((int)$occupancyRate, 100) }}%"
+                    style="width: {{ $occupancyRate !== null ? min((int)$occupancyRate, 100) : 0 }}%"
                 ></div>
             </div>
             <div class="mt-3 border-t border-black/[0.06] pt-3 dark:border-white/[0.08]">

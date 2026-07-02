@@ -63,13 +63,15 @@ class DashboardController extends Controller
         $opening = $restaurant->openingHours()->where('weekday', $weekday)->first();
         $openMinutes = 0;
         if ($opening) {
-            $opens = Carbon::parse($opening->opens_at, $tz);
-            $closes = Carbon::parse($opening->closes_at, $tz);
-            $openMinutes = max(0, $closes->diffInMinutes($opens));
+            [$openH, $openM] = array_map('intval', explode(':', $opening->opens_at));
+            [$closeH, $closeM] = array_map('intval', explode(':', $opening->closes_at));
+            $openMinutes = max(0, ($closeH * 60 + $closeM) - ($openH * 60 + $openM));
         }
         $resourceCount = $restaurant->resources()->where('active', true)->count();
-        $capacityMinutes = max(1, $openMinutes * max(1, $resourceCount));
-        $occupancyRate = round(((float) $bookedMinutesToday / $capacityMinutes) * 100, 1);
+        $capacityMinutes = $openMinutes * max(1, $resourceCount);
+        $occupancyRate = $capacityMinutes > 0
+            ? round(((float) $bookedMinutesToday / $capacityMinutes) * 100, 1)
+            : null;
 
         return view('restaurant-admin.dashboard', compact(
             'restaurant',
