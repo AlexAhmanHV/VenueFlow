@@ -16,16 +16,23 @@ class DemoLoginController extends Controller
             [
                 'name' => 'Demo Owner',
                 'password' => Hash::make('password'),
-                'email_verified_at' => now(),
             ]
         );
 
+        $needsSave = false;
+
         if (! Hash::check('password', $user->password)) {
-            $user->update([
-                'password' => Hash::make('password'),
-                'email_verified_at' => $user->email_verified_at ?? now(),
-            ]);
-            $user->refresh();
+            $user->password = Hash::make('password');
+            $needsSave = true;
+        }
+
+        if (is_null($user->email_verified_at)) {
+            $user->email_verified_at = now();
+            $needsSave = true;
+        }
+
+        if ($needsSave) {
+            $user->saveQuietly();
         }
 
         Auth::login($user);
