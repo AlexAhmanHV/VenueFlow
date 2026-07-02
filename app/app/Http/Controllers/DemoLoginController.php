@@ -22,10 +22,14 @@ class DemoLoginController extends Controller
         $restaurant = DB::table('restaurants')->where('slug', 'golfbaren')->first();
         if ($restaurant) {
             $this->restaurantId = $restaurant->id;
-            $this->seedStaticIfNeeded();
-            $this->seedStaffIfNeeded();
-            $this->seedHistoricalIfNeeded();
-            $this->seedTodayIfNeeded();
+            try {
+                $this->seedStaticIfNeeded();
+                $this->seedStaffIfNeeded();
+                $this->seedHistoricalIfNeeded();
+                $this->seedTodayIfNeeded();
+            } catch (\Throwable $e) {
+                logger()->error('Demo seeder failed: ' . $e->getMessage());
+            }
         }
 
         return redirect('/r/golfbaren/admin/dashboard');
