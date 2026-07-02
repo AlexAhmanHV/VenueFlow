@@ -23,6 +23,7 @@ class DemoLoginController extends Controller
         if ($restaurant) {
             $this->restaurantId = $restaurant->id;
             $this->seedStaticIfNeeded();
+            $this->seedStaffIfNeeded();
             $this->seedHistoricalIfNeeded();
             $this->seedTodayIfNeeded();
         }
@@ -77,6 +78,57 @@ class DemoLoginController extends Controller
                     'active'        => true,
                     'tags'          => $tags,
                     'sort_order'    => $sort,
+                    'created_at'    => $now,
+                    'updated_at'    => $now,
+                ]);
+            }
+        }
+    }
+
+    private function seedStaffIfNeeded(): void
+    {
+        $hasStaff = DB::table('restaurant_memberships')
+            ->where('restaurant_id', $this->restaurantId)
+            ->where('role', 'STAFF')
+            ->exists();
+
+        if ($hasStaff) {
+            return;
+        }
+
+        $now = Carbon::now('UTC');
+
+        $staff = [
+            ['Tobias Franzén',  'tobias@golfbaren.se',  'MANAGER'],
+            ['Ida Wallin',      'ida@golfbaren.se',     'STAFF'],
+            ['Oscar Lindberg',  'oscar@golfbaren.se',   'STAFF'],
+        ];
+
+        foreach ($staff as [$name, $email, $staffRole]) {
+            $userId = DB::table('users')->where('email', $email)->value('id');
+
+            if (! $userId) {
+                $userId = DB::table('users')->insertGetId([
+                    'name'              => $name,
+                    'email'             => $email,
+                    'password'          => bcrypt('password'),
+                    'email_verified_at' => $now,
+                    'created_at'        => $now,
+                    'updated_at'        => $now,
+                ]);
+            }
+
+            $alreadyMember = DB::table('restaurant_memberships')
+                ->where('restaurant_id', $this->restaurantId)
+                ->where('user_id', $userId)
+                ->exists();
+
+            if (! $alreadyMember) {
+                DB::table('restaurant_memberships')->insert([
+                    'restaurant_id' => $this->restaurantId,
+                    'user_id'       => $userId,
+                    'role'          => 'STAFF',
+                    'staff_role'    => $staffRole,
                     'created_at'    => $now,
                     'updated_at'    => $now,
                 ]);
