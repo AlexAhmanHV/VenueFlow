@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'VenueFlow') }}</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600|syne:600,700,800&display=swap" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
-    <!-- Theme Script -->
     <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -21,103 +19,157 @@
         }
     </script>
 
-    <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased">
-    <div x-data="{ sidebarOpen: false }" class="flex h-screen bg-gray-100 dark:bg-gray-900">
-        <!-- Sidebar -->
-        <aside :class="sidebarOpen ? 'block' : 'hidden'" class="fixed inset-y-0 left-0 z-30 w-64 transform bg-gray-900 shadow-lg transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0 lg:block lg:w-80">
-            <div class="flex h-full flex-col justify-between">
-                <div class="py-6 px-4">
-                    <div class="mb-8 flex items-center">
-                        <a href="/" class="text-2xl font-bold text-white">VenueFlow</a>
-                    </div>
-                    
-                    @php
-                        $slug = request()->route('slug')
-                            ?? request()->route('restaurant_slug')
-                            ?? optional(request()->attributes->get('restaurant'))->slug;
-                    @endphp
+<body class="font-sans antialiased bg-[#f4f6f2] dark:bg-slate-900 dark:text-white">
 
-                    <nav class="space-y-2 text-gray-300">
-                        <a href="{{ route('restaurant.admin.dashboard', $slug) }}" class="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium transition-colors hover:bg-gray-700 hover:text-white">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10v11h6V10H3zm18 11h-6V10h6v11zM9 4v17h6V4H9z"></path></svg>
-                            <span>Dashboard</span>
-                        </a>
-                        <a href="{{ route('restaurant.admin.operations', $slug) }}" class="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium transition-colors hover:bg-gray-700 hover:text-white">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                            <span>Driftvy</span>
-                        </a>
-                        <a href="{{ route('restaurant.admin.bookings.live', $slug) }}" class="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium transition-colors hover:bg-gray-700 hover:text-white">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <span>Live board</span>
-                        </a>
-                        
-                        <div class="pt-4">
-                            <p class="px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Manage</p>
-                            <div class="mt-2 space-y-2">
-                                <a href="{{ route('restaurant.admin.resources.index', $slug) }}" class="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium transition-colors hover:bg-gray-700 hover:text-white">
-                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14v-2h-2v2h2zm0-4v-2h-2v2h2zm-4 4v-2h-2v2h2zm0-4v-2h-2v2h2zm-4 4v-2H9v2h2zm-4 0v-2H5v2h2zm-4-4v-2H1v2h2zm18-4v-2h-2v2h2z"></path></svg>
-                                    <span>Resurser</span>
-                                </a>
-                                <a href="{{ route('restaurant.admin.schedule.index', $slug) }}" class="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium transition-colors hover:bg-gray-700 hover:text-white">
-                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    <span>Schema</span>
-                                </a>
-                                <a href="{{ route('restaurant.admin.menu.index', $slug) }}" class="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium transition-colors hover:bg-gray-700 hover:text-white">
-                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                                    <span>Meny</span>
-                                </a>
-                                <a href="{{ route('restaurant.admin.staff.index', $slug) }}" class="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium transition-colors hover:bg-gray-700 hover:text-white">
-                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-3-3h-2a3 3 0 00-3 3v2h3zM4 15a4 4 0 014-4h2a4 4 0 014 4v5H4v-5zM9 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                                    <span>Personal</span>
-                                </a>
-                                <a href="{{ route('restaurant.admin.settings.edit', $slug) }}" class="flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium transition-colors hover:bg-gray-700 hover:text-white">
-                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                    <span>Inställningar</span>
-                                </a>
-                            </div>
-                        </div>
-                    </nav>
+    @php
+        $restaurant = request()->attributes->get('restaurant');
+        $slug = $restaurant?->slug
+            ?? request()->route('slug')
+            ?? request()->route('restaurant_slug');
+    @endphp
+
+    {{-- Top navigation --}}
+    <nav x-data="{ open: false }" class="sticky top-0 z-50 border-b border-white/60 bg-white/70 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/70">
+        <div class="vf-container">
+            <div class="flex h-16 items-center justify-between">
+
+                {{-- Left: logo + restaurant name --}}
+                <div class="flex items-center gap-5">
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2 transition hover:opacity-80">
+                        <x-application-logo class="block h-8 w-auto fill-current text-emerald-600" />
+                        <span class="hidden text-base font-bold tracking-tight text-slate-900 dark:text-white sm:inline">VenueFlow</span>
+                    </a>
+
+                    @if($restaurant)
+                        <div class="hidden h-5 w-px bg-slate-200 dark:bg-slate-700 sm:block"></div>
+                        <span class="hidden font-display text-sm font-semibold text-slate-700 dark:text-slate-300 sm:inline">{{ $restaurant->name }}</span>
+                    @endif
+                </div>
+
+                {{-- Right: theme toggle + user dropdown --}}
+                <div class="flex items-center gap-3">
+                    <button @click="Alpine.store('theme').toggle()" class="rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800">
+                        <svg x-show="!$store.theme.dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                        </svg>
+                        <svg x-show="$store.theme.dark" style="display:none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                        </svg>
+                    </button>
+
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                                <div class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
+                                    {{ substr(Auth::user()->name, 0, 1) }}
+                                </div>
+                                <span class="hidden sm:inline">{{ Auth::user()->name }}</span>
+                                <svg class="h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </x-slot>
+                        <x-slot name="content">
+                            <x-dropdown-link :href="route('profile.edit')">Profil</x-dropdown-link>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">Logga ut</x-dropdown-link>
+                            </form>
+                        </x-slot>
+                    </x-dropdown>
+
+                    <button @click="open = !open" class="rounded-md p-2 text-slate-400 transition hover:bg-slate-100 sm:hidden">
+                        <svg class="h-5 w-5" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path :class="{'hidden': open, 'inline-flex': !open}" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            <path :class="{'hidden': !open, 'inline-flex': open}" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
             </div>
-        </aside>
+        </div>
 
-        <!-- Main content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Top bar -->
-            <header class="flex items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-                <div class="flex items-center">
-                    <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none lg:hidden">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                    </button>
-                    @isset($header)
-                       <div class="ml-4">{{ $header }}</div>
-                    @endisset
-                </div>
-            </header>
-            @if (config('demo.public_mode') && ! session((string) config('demo.session_flag', 'demo.full_access_granted')))
-                <div class="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                    Read-only demo mode: changes are blocked.
-                    <a href="{{ route('demo.access.show') }}" class="font-semibold underline">Unlock full access</a>
-                    to enable write actions.
-                </div>
+        {{-- Mobile dropdown --}}
+        <div :class="{'block': open, 'hidden': !open}" class="hidden border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 sm:hidden">
+            @if($restaurant && $slug)
+            <div class="space-y-0.5 px-4 py-3 text-sm">
+                @php
+                    $mobileItems = [
+                        ['label' => 'Dashboard', 'route' => 'restaurant.admin.dashboard'],
+                        ['label' => 'Live board', 'route' => 'restaurant.admin.bookings.live'],
+                        ['label' => 'Analys', 'route' => 'restaurant.admin.analytics'],
+                        ['label' => 'Resurser', 'route' => 'restaurant.admin.resources.index'],
+                        ['label' => 'Inställningar', 'route' => 'restaurant.admin.settings.edit'],
+                    ];
+                @endphp
+                @foreach($mobileItems as $item)
+                    <a href="{{ route($item['route'], $slug) }}" class="block rounded-lg px-3 py-2 font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+                        {{ $item['label'] }}
+                    </a>
+                @endforeach
+            </div>
             @endif
+            <div class="border-t border-slate-200 px-7 py-3 dark:border-slate-800">
+                <div class="text-sm font-medium text-slate-800 dark:text-slate-200">{{ Auth::user()->name }}</div>
+                <div class="text-xs text-slate-500">{{ Auth::user()->email }}</div>
+            </div>
+        </div>
+    </nav>
 
-            <!-- Page Content -->
-            <main class="flex-1 overflow-y-auto">
-                <div class="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-                    {{ $slot }}
-                </div>
-            </main>
-            <footer class="border-t border-gray-200 bg-white px-4 py-4 dark:border-gray-700 dark:bg-gray-800">
-                <div class="mx-auto flex w-full max-w-4xl items-center justify-center gap-2 text-xs text-gray-600 dark:text-gray-300">
-                    <span>Skapad av</span>
-                    <a href="https://alexahman.se" target="_blank" rel="noopener noreferrer" class="font-semibold text-gray-800 hover:text-indigo-600 dark:text-gray-100 dark:hover:text-indigo-400">AlexAhman.se</a>
-                </div>
-            </footer>
+    {{-- Restaurant sub-nav --}}
+    @if($restaurant && $slug)
+    <div class="border-b border-black/[0.07] bg-white/50 backdrop-blur-sm dark:border-white/10 dark:bg-slate-900/50">
+        <div class="vf-container">
+            <div class="flex items-center overflow-x-auto" style="scrollbar-width:none">
+                @php
+                    $subNavItems = [
+                        ['label' => 'Dashboard', 'route' => 'restaurant.admin.dashboard', 'match' => 'restaurant.admin.dashboard'],
+                        ['label' => 'Driftvy', 'route' => 'restaurant.admin.operations', 'match' => 'restaurant.admin.operations'],
+                        ['label' => 'Live board', 'route' => 'restaurant.admin.bookings.live', 'match' => 'restaurant.admin.bookings.live'],
+                        ['label' => 'Analys', 'route' => 'restaurant.admin.analytics', 'match' => 'restaurant.admin.analytics*'],
+                        ['label' => 'Meny', 'route' => 'restaurant.admin.menu.index', 'match' => 'restaurant.admin.menu.*'],
+                        ['label' => 'Schema', 'route' => 'restaurant.admin.schedule.index', 'match' => 'restaurant.admin.schedule.*'],
+                        ['label' => 'Resurser', 'route' => 'restaurant.admin.resources.index', 'match' => 'restaurant.admin.resources.*'],
+                        ['label' => 'Personal', 'route' => 'restaurant.admin.staff.index', 'match' => 'restaurant.admin.staff.*'],
+                        ['label' => 'Inställningar', 'route' => 'restaurant.admin.settings.edit', 'match' => 'restaurant.admin.settings.*'],
+                    ];
+                @endphp
+                @foreach($subNavItems as $item)
+                    @php $active = request()->routeIs($item['match']); @endphp
+                    <a
+                        href="{{ route($item['route'], $slug) }}"
+                        class="relative shrink-0 px-4 py-3 text-sm font-medium transition-colors duration-150 {{ $active ? 'text-emerald-800 dark:text-emerald-400' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white' }}"
+                    >
+                        {{ $item['label'] }}
+                        @if($active)
+                            <span class="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-emerald-700"></span>
+                        @endif
+                    </a>
+                @endforeach
+            </div>
         </div>
     </div>
+    @endif
+
+    @if(config('demo.public_mode') && !session((string) config('demo.session_flag', 'demo.full_access_granted')))
+        <div class="border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-900 dark:border-amber-800/40 dark:bg-amber-950/30 dark:text-amber-200">
+            Demo read-only: ändringar är blockerade.
+            <a href="{{ route('demo.access.show') }}" class="font-semibold underline">Lås upp full access</a>
+        </div>
+    @endif
+
+    <main class="vf-container py-8">
+        {{ $slot }}
+    </main>
+
+    <footer class="py-8">
+        <div class="mx-auto flex w-full max-w-4xl items-center justify-center gap-2 text-xs text-slate-400">
+            <span>Skapad av</span>
+            <a href="https://alexahman.se" target="_blank" rel="noopener noreferrer" class="font-semibold text-slate-500 transition hover:text-emerald-700">AlexAhman.se</a>
+        </div>
+    </footer>
+
+    @stack('scripts')
 </body>
 </html>

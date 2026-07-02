@@ -1,101 +1,119 @@
 <x-restaurant-admin-layout>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-            {{ $restaurant->name }} &middot; <span class="text-gray-500">Dashboard</span>
-        </h2>
-    </x-slot>
 
-    <div class="space-y-8">
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
-            <div class="flex items-center rounded-lg bg-white p-5 shadow dark:bg-gray-800">
-                <div class="rounded-full bg-indigo-500 p-3">
-                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Bokningar idag</p>
-                    <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ $bookingsToday }}</p>
-                </div>
-            </div>
-            <div class="flex items-center rounded-lg bg-white p-5 shadow dark:bg-gray-800">
-                <div class="rounded-full bg-green-500 p-3">
-                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Incheckade idag</p>
-                    <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ $checkedInToday }}</p>
-                </div>
-            </div>
-            <div class="flex items-center rounded-lg bg-white p-5 shadow dark:bg-gray-800">
-                <div class="rounded-full bg-red-500 p-3">
-                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">No-show idag</p>
-                    <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ $noShowsToday }}</p>
-                </div>
-            </div>
-            <div class="flex items-center rounded-lg bg-white p-5 shadow dark:bg-gray-800">
-                <div class="rounded-full bg-yellow-500 p-3">
-                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-3-3h-2a3 3 0 00-3 3v2h3zM4 15a4 4 0 014-4h2a4 4 0 014 4v5H4v-5zM9 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Beläggning (est.)</p>
-                    <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ $occupancyRate }}%</p>
-                </div>
-            </div>
-            <div class="flex items-center rounded-lg bg-white p-5 shadow dark:bg-gray-800">
-                <div class="rounded-full bg-purple-500 p-3">
-                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H4a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Förbeställning idag</p>
-                    <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ number_format((float)$preorderRevenueToday, 0, ',', ' ') }} kr</p>
-                </div>
+    @php
+        $todayLabel = \Carbon\Carbon::now($restaurant->timezone ?? 'Europe/Stockholm')
+            ->locale('sv')
+            ->isoFormat('dddd D MMMM');
+    @endphp
+
+    {{-- Page header --}}
+    <div class="mb-8 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <h1 class="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            {{ $restaurant->name }}
+        </h1>
+        <p class="text-sm text-slate-400 dark:text-slate-500">{{ ucfirst($todayLabel) }}</p>
+    </div>
+
+    {{-- Stats: 3-column asymmetric --}}
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+
+        <div class="rounded-2xl border border-black/[0.08] bg-white p-6 dark:border-white/10 dark:bg-slate-800">
+            <p class="font-display text-5xl font-black tabular-nums tracking-tight text-slate-900 dark:text-white">
+                {{ $bookingsToday }}
+            </p>
+            <div class="mt-3 border-t border-black/[0.06] pt-3 dark:border-white/[0.08]">
+                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Bokningar idag</p>
             </div>
         </div>
 
-        <!-- Upcoming Bookings -->
-        <div class="rounded-lg bg-white p-6 shadow dark:bg-gray-800">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Kommande bokningar</h3>
-            <div class="mt-4 flow-root">
-                <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                        @if($upcomingBookings->count() > 0)
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-white sm:pl-0">Kund</th>
-                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white">Tid</th>
-                                    <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                                        <span class="sr-only">Status</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                @foreach($upcomingBookings as $booking)
-                                    <tr>
-                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-white sm:pl-0">{{ $booking->customer_name }}</td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">{{ $booking->created_at->timezone($restaurant->timezone)->format('Y-m-d H:i') }}</td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-right">
-                                            <span class="inline-flex items-center rounded-md bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">{{ $booking->status->value }}</span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        @else
-                            <div class="flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center dark:border-gray-600">
-                                <div class="text-gray-500 dark:text-gray-400">
-                                    <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    <h3 class="mt-2 text-sm font-medium">Inga kommande bokningar</h3>
-                                    <p class="mt-1 text-sm">När en ny bokning görs kommer den att visas här.</p>
-                                </div>
-                            </div>
-                        @endif
+        <div class="rounded-2xl border border-black/[0.08] bg-white p-6 dark:border-white/10 dark:bg-slate-800">
+            <p class="font-display text-5xl font-black tabular-nums tracking-tight text-slate-900 dark:text-white">
+                {{ $checkedInToday }}
+            </p>
+            <div class="mt-3 border-t border-black/[0.06] pt-3 dark:border-white/[0.08]">
+                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Incheckade idag</p>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-black/[0.08] bg-white p-6 dark:border-white/10 dark:bg-slate-800">
+            <div class="flex items-start justify-between gap-4">
+                <p class="font-display text-5xl font-black tabular-nums tracking-tight text-slate-900 dark:text-white">
+                    {{ $occupancyRate }}<span class="text-2xl font-bold text-slate-300 dark:text-slate-600">%</span>
+                </p>
+                @if($noShowsToday > 0)
+                    <div class="shrink-0 text-right">
+                        <p class="font-display text-xl font-bold tabular-nums text-rose-500">{{ $noShowsToday }}</p>
+                        <p class="text-xs text-slate-400">no-show</p>
                     </div>
-                </div>
+                @endif
+            </div>
+            <div class="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
+                <div
+                    class="h-full rounded-full bg-emerald-600 transition-all duration-700"
+                    style="width: {{ min((int)$occupancyRate, 100) }}%"
+                ></div>
+            </div>
+            <div class="mt-3 border-t border-black/[0.06] pt-3 dark:border-white/[0.08]">
+                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Beläggning</p>
             </div>
         </div>
     </div>
+
+    {{-- Second row: bookings table + revenue --}}
+    <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[1fr_280px]">
+
+        {{-- Upcoming bookings --}}
+        <div class="rounded-2xl border border-black/[0.08] bg-white p-6 dark:border-white/10 dark:bg-slate-800">
+            <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Kommande bokningar</h2>
+
+            @if($upcomingBookings->count() > 0)
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="border-b border-black/[0.06] dark:border-white/[0.08]">
+                                <th class="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Kund</th>
+                                <th class="pb-3 pl-6 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Tid</th>
+                                <th class="pb-3 pl-6 text-right text-xs font-semibold uppercase tracking-wider text-slate-400">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-black/[0.04] dark:divide-white/[0.05]">
+                            @foreach($upcomingBookings as $booking)
+                                <tr>
+                                    <td class="py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200">
+                                        {{ $booking->customer_name }}
+                                    </td>
+                                    <td class="py-3.5 pl-6 text-sm tabular-nums text-slate-500">
+                                        {{ $booking->created_at->timezone($restaurant->timezone)->format('H:i') }}
+                                    </td>
+                                    <td class="py-3.5 pl-6 text-right">
+                                        <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                                            {{ $booking->status->value }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="mt-6 rounded-xl border border-dashed border-slate-200 p-8 text-center dark:border-slate-700">
+                    <p class="text-sm font-medium text-slate-700 dark:text-slate-300">Inga bokningar att visa</p>
+                    <p class="mt-1 text-xs text-slate-400">Allt lugnt just nu.</p>
+                </div>
+            @endif
+        </div>
+
+        {{-- Preorder revenue --}}
+        <div class="rounded-2xl border border-black/[0.08] bg-white p-6 dark:border-white/10 dark:bg-slate-800">
+            <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Förbeställningar</h2>
+            <div class="mt-5">
+                <p class="font-display text-4xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-white">
+                    {{ number_format((float)$preorderRevenueToday, 0, ',', '\u{00a0}') }}
+                </p>
+                <p class="mt-0.5 text-sm font-medium text-slate-400">kr idag</p>
+            </div>
+        </div>
+
+    </div>
+
 </x-restaurant-admin-layout>
