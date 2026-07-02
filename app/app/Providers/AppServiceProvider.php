@@ -33,8 +33,8 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('public-booking', function (Request $request) {
             return [
-                Limit::perMinute(30)->by($request->ip()),
-                Limit::perMinute(15)->by('session:'.$request->session()->getId()),
+                Limit::perMinute(10)->by($request->ip()),
+                Limit::perMinute(8)->by('session:'.$request->session()->getId()),
             ];
         });
 

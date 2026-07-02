@@ -28,6 +28,7 @@ Route::post('/demo/full-access', [DemoAccessController::class, 'store'])
     ->middleware('throttle:6,1')
     ->name('demo.access.store');
 Route::post('/demo/full-access/revoke', [DemoAccessController::class, 'revoke'])
+    ->middleware('throttle:6,1')
     ->name('demo.access.revoke');
 
 Route::middleware(['resolve_restaurant'])
@@ -45,7 +46,9 @@ Route::middleware(['resolve_restaurant'])
             ->middleware('throttle:public-booking')
             ->name('public.booking.store');
         Route::get('/booking/{public_id}', [PublicBookingController::class, 'show'])->name('public.booking.show');
-        Route::get('/cancel', [PublicBookingController::class, 'cancel'])->name('public.booking.cancel');
+        Route::get('/cancel', [PublicBookingController::class, 'cancel'])
+            ->middleware('throttle:6,1')
+            ->name('public.booking.cancel');
         Route::get('/waitlist', [PublicWaitlistController::class, 'create'])->name('public.waitlist.create');
         Route::post('/waitlist', [PublicWaitlistController::class, 'store'])
             ->middleware('throttle:6,1')
