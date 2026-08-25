@@ -27,10 +27,14 @@
                 href="{{ route('restaurant.admin.bookings.live', array_filter(['slug' => $restaurant->slug, 'date' => $boardDate, 'view' => 'grid'])) }}"
                 class="{{ $activeView === 'grid' ? 'vf-btn-primary' : 'vf-btn-secondary' }}"
             >Rutnät</a>
-            <a
-                href="{{ route('restaurant.admin.bookings.live', array_filter(['slug' => $restaurant->slug, 'date' => $boardDate, 'view' => 'floor'])) }}"
-                class="{{ $activeView === 'floor' ? 'vf-btn-primary' : 'vf-btn-secondary' }}"
-            >Golvplan</a>
+            @if($isToday)
+                <a
+                    href="{{ route('restaurant.admin.bookings.live', array_filter(['slug' => $restaurant->slug, 'date' => $boardDate, 'view' => 'floor'])) }}"
+                    class="{{ $activeView === 'floor' ? 'vf-btn-primary' : 'vf-btn-secondary' }}"
+                >Golvplan</a>
+            @else
+                <span class="vf-btn-secondary pointer-events-none opacity-45" aria-disabled="true" title="Golvplan &auml;r bara tillg&auml;nglig f&ouml;r dagens datum">Golvplan</span>
+            @endif
         </div>
 
         <div id="move-status" class="hidden rounded-xl border px-4 py-3 text-sm"></div>
@@ -143,6 +147,7 @@
                             };
                             $left = $resource->isPositioned() ? $resource->position_x : (10 + ($loop->index % 8) * 11);
                             $top = $resource->isPositioned() ? $resource->position_y : (15 + intdiv($loop->index, 8) * 20);
+                            $hasBooking = isset($currentBookingByResource[$resource->id]);
                         @endphp
                         <button
                             type="button"
@@ -150,40 +155,31 @@
                             :class="openResourceId === {{ $resource->id }} ? 'ring-2 ring-slate-900' : ''"
                             style="left: {{ $left }}%; top: {{ $top }}%;"
                             data-occupancy="{{ $status }}"
-                            @click="openResource({{ $resource->id }})"
+                            @if($hasBooking) @click="openResource({{ $resource->id }})" @endif
                         >{{ $resource->name }}</button>
                     @endforeach
                 </div>
 
-                <p class="mt-3 text-xs text-slate-500">
-                    <a class="underline" href="{{ route('restaurant.admin.floor-plan.edit', $restaurant->slug) }}">Redigera golvplan</a>
-                </p>
+                @if($canManage)
+                    <p class="mt-3 text-xs text-slate-500">
+                        <a class="underline" href="{{ route('restaurant.admin.floor-plan.edit', $restaurant->slug) }}">Redigera golvplan</a>
+                    </p>
+                @endif
             </div>
 
             <x-modal name="floor-plan-booking" :show="false" maxWidth="md">
-                <div class="p-6" x-data="{}" x-show="$store.floorPlan?.activeBooking" x-cloak>
-                    <template x-if="$store.floorPlan?.activeBooking">
-                        <div>
-                            <h3 class="text-lg font-semibold" x-text="$store.floorPlan.activeBooking.customer_name"></h3>
-                            <p class="text-sm text-slate-600" x-text="$store.floorPlan.activeBooking.party_size + ' pers · ' + $store.floorPlan.activeBooking.status"></p>
+                <div class="p-6">
+                    @foreach($currentBookingByResource as $resourceId => $booking)
+                        <div x-show="openResourceId === {{ $resourceId }}" x-cloak>
+                            @include('restaurant-admin.bookings.partials._booking-card', ['restaurant' => $restaurant, 'booking' => $booking])
                         </div>
-                    </template>
+                    @endforeach
                 </div>
             </x-modal>
 
             <script>
                 function floorPlanBoard() {
                     return {
-                        bookingsByResource: @js(
-                            $bookings->flatMap(fn ($booking) => $booking->bookingItems->map(fn ($item) => [
-                                'resource_id' => $item->resource_id,
-                                'booking' => [
-                                    'customer_name' => $booking->customer_name,
-                                    'party_size' => $booking->party_size,
-                                    'status' => $booking->status->value,
-                                ],
-                            ]))
-                        ),
                         openResourceId: null,
                         init() {
                             if (window.Echo) {
@@ -193,10 +189,7 @@
                             }
                         },
                         openResource(resourceId) {
-                            const match = this.bookingsByResource.find(b => b.resource_id === resourceId);
-                            if (!match) return;
                             this.openResourceId = resourceId;
-                            Alpine.store('floorPlan', { activeBooking: match.booking });
                             window.dispatchEvent(new CustomEvent('open-modal', { detail: 'floor-plan-booking' }));
                         },
                     };

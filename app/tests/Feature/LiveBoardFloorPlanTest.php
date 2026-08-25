@@ -116,4 +116,43 @@ class LiveBoardFloorPlanTest extends TestCase
             ->assertOk()
             ->assertSee('Unplaced Table');
     }
+
+    public function test_saved_positions_are_rendered_on_the_floor_plan_for_today(): void
+    {
+        $restaurant = $this->makeRestaurant();
+        $resource = $this->makeResource($restaurant, 'Table 1');
+        $manager = $this->adminFor($restaurant);
+
+        $this->actingAs($manager)
+            ->patch("/r/{$restaurant->slug}/admin/floor-plan", [
+                'positions' => [
+                    ['resource_id' => $resource->id, 'x' => 33.5, 'y' => 66.25],
+                ],
+            ])
+            ->assertRedirect();
+
+        $staff = $this->adminFor($restaurant);
+
+        $response = $this->actingAs($staff)
+            ->get("/r/{$restaurant->slug}/admin/bookings/live-board?view=floor")
+            ->assertOk();
+
+        $response->assertSee('left: 33.5%; top: 66.25%;', false);
+    }
+
+    public function test_floor_view_is_forced_to_grid_for_a_non_today_date(): void
+    {
+        $restaurant = $this->makeRestaurant();
+        $this->makeResource($restaurant, 'Table 1');
+        $admin = $this->adminFor($restaurant);
+
+        $nonToday = Carbon::now($restaurant->timezone)->addDays(3)->format('Y-m-d');
+
+        $response = $this->actingAs($admin)
+            ->get("/r/{$restaurant->slug}/admin/bookings/live-board?view=floor&date={$nonToday}")
+            ->assertOk();
+
+        $response->assertSee('Golvplan');
+        $response->assertDontSee('data-occupancy', false);
+    }
 }

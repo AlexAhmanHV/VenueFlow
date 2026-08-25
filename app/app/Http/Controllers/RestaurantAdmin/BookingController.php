@@ -50,6 +50,7 @@ class BookingController extends Controller
         $dayLocal = Carbon::parse($boardDate, $restaurant->timezone);
         $todayStart = $dayLocal->copy()->startOfDay()->utc();
         $todayEnd = $dayLocal->copy()->endOfDay()->utc();
+        $isToday = $dayLocal->isSameDay(Carbon::now($restaurant->timezone));
 
         $bookings = GuestBooking::query()
             ->where('restaurant_id', $restaurant->id)
@@ -62,8 +63,41 @@ class BookingController extends Controller
 
         $resources = $restaurant->resources()->where('active', true)->orderBy('type')->orderBy('name')->get();
 
-        $occupancy = ResourceOccupancyResolver::resolve($bookings, Carbon::now());
-        $activeView = $request->string('view')->toString() === 'floor' ? 'floor' : 'grid';
+        $now = Carbon::now();
+        $occupancy = ResourceOccupancyResolver::resolve($bookings, $now);
+
+        $currentBookingByResource = [];
+        foreach ($bookings as $booking) {
+            if (in_array($booking->status, [BookingStatus::CANCELLED, BookingStatus::NO_SHOW], true)) {
+                continue;
+            }
+
+            foreach ($booking->bookingItems as $item) {
+                $resourceId = $item->resource_id;
+                $isCurrent = $item->start_time->lte($now) && $item->end_time->gte($now);
+                $isSoon = $item->start_time->gt($now) && $item->start_time->lte($now->copy()->addMinutes(30));
+
+                if (! $isCurrent && ! $isSoon) {
+                    continue;
+                }
+
+                $already = $currentBookingByResource[$resourceId] ?? null;
+                if ($already && $already['is_current'] && ! $isCurrent) {
+                    continue;
+                }
+
+                $currentBookingByResource[$resourceId] = ['booking' => $booking, 'is_current' => $isCurrent];
+            }
+        }
+        $currentBookingByResource = array_map(fn ($entry) => $entry['booking'], $currentBookingByResource);
+
+        $activeView = ($isToday && $request->string('view')->toString() === 'floor') ? 'floor' : 'grid';
+
+        $membership = $request->user()?->membershipFor($restaurant);
+        $isRestaurantAdmin = $membership?->role?->value === 'RESTAURANT_ADMIN';
+        $isStaffMember = $membership?->role?->value === 'STAFF';
+        $staffRole = $membership?->staff_role?->value;
+        $canManage = $isRestaurantAdmin || ($isStaffMember && $staffRole === 'MANAGER');
 
         $openingHour = $restaurant->openingHours()->where('weekday', (int) $dayLocal->isoWeekday())->first();
         $opensAt = $openingHour?->opens_at ? substr((string) $openingHour->opens_at, 0, 5) : '12:00';
@@ -78,7 +112,7 @@ class BookingController extends Controller
             $cursor->addMinutes($slotStep);
         }
 
-        return view('restaurant-admin.bookings.live-board', compact('restaurant', 'bookings', 'resources', 'slots', 'boardDate', 'slotStep', 'occupancy', 'activeView'));
+        return view('restaurant-admin.bookings.live-board', compact('restaurant', 'bookings', 'resources', 'slots', 'boardDate', 'slotStep', 'occupancy', 'activeView', 'isToday', 'currentBookingByResource', 'canManage'));
     }
 
     public function show(Request $request, string $slug, GuestBooking $booking)
