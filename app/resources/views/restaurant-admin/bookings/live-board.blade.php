@@ -165,17 +165,17 @@
                         <a class="underline" href="{{ route('restaurant.admin.floor-plan.edit', $restaurant->slug) }}">Redigera golvplan</a>
                     </p>
                 @endif
-            </div>
 
-            <x-modal name="floor-plan-booking" :show="false" maxWidth="md">
-                <div class="p-6">
-                    @foreach($currentBookingByResource as $resourceId => $booking)
-                        <div x-show="openResourceId === {{ $resourceId }}" x-cloak>
-                            @include('restaurant-admin.bookings.partials._booking-card', ['restaurant' => $restaurant, 'booking' => $booking])
-                        </div>
-                    @endforeach
-                </div>
-            </x-modal>
+                <x-modal name="floor-plan-booking" :show="false" maxWidth="md">
+                    <div class="p-6">
+                        @foreach($currentBookingByResource as $resourceId => $booking)
+                            <div x-show="openResourceId === {{ $resourceId }}" x-cloak>
+                                @include('restaurant-admin.bookings.partials._booking-card', ['restaurant' => $restaurant, 'booking' => $booking])
+                            </div>
+                        @endforeach
+                    </div>
+                </x-modal>
+            </div>
 
             <script>
                 function floorPlanBoard() {

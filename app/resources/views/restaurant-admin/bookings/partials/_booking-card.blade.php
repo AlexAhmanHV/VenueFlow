@@ -1,5 +1,3 @@
-@props(['restaurant', 'booking'])
-
 <article class="vf-card p-4">
     <div class="flex items-start justify-between gap-3">
         <div>
