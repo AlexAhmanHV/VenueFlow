@@ -38,7 +38,7 @@ graph TB
     end
 
     subgraph Data["Data Layer"]
-        ORM --> DB[(Supabase PostgreSQL)]
+        ORM --> DB[(Neon PostgreSQL)]
         JOB --> QUEUE[Queue worker]
         QUEUE --> MAIL[Waitlist email]
         CTRL --> QR[endroid/qr-code]
@@ -63,7 +63,7 @@ graph TB
 | Layer | Technology |
 |---|---|
 | Backend framework | Laravel 11, PHP 8.3 |
-| Database | Supabase (managed PostgreSQL), session pooler for IPv4 |
+| Database | Neon (managed serverless PostgreSQL) |
 | WebSockets | Laravel Reverb (first-party, self-hosted) |
 | Frontend | Blade templates, Alpine.js, Tailwind CSS v3 |
 | Asset pipeline | Vite |
@@ -89,8 +89,8 @@ Each restaurant is a **tenant**. The `resolve_restaurant` middleware reads the `
 **Why Laravel Reverb instead of Pusher?**
 First-party, self-hosted, zero external dependency. Identical Echo client API, no API key to manage, no usage limits.
 
-**Why Supabase instead of plain PostgreSQL?**
-Managed hosting, built-in connection pooler. Session pooler mode (`port 5432`) solves IPv4/IPv6 compatibility on Render without needing PgBouncer manually.
+**Why Neon instead of plain PostgreSQL?**
+Managed, serverless hosting that scales to zero on inactivity and wakes automatically on the next request — no manual "resume" step and no free-tier active-project cap to run into, unlike Supabase's free tier. Use the direct (non-pooled) connection string for `DB_HOST`, not the `-pooler` host: Neon's pgbouncer pooler runs in transaction-pooling mode, which can silently abort Laravel's multi-statement migration transactions (`SQLSTATE[25P02]`) if the pooler reassigns the backend connection mid-transaction.
 
 **Why Alpine.js instead of React/Vue?**
 The admin UI is server-rendered Blade. Alpine adds interactivity without a SPA build or hydration overhead. The live board only needs `x-data` + WebSocket event handling — React would be overkill.

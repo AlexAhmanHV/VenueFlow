@@ -5,7 +5,7 @@ Multi-tenant bokningssystem för aktivitets-/restaurangställen.
 ## Stack
 - Laravel 11
 - PHP 8.3
-- Postgres (primärt, Supabase-kompatibelt)
+- Postgres (Neon)
 - Laravel Breeze (Blade + Tailwind)
 - Mail via `MAIL_MAILER=log`
 
@@ -19,17 +19,17 @@ Multi-tenant bokningssystem för aktivitets-/restaurangställen.
 - Medlemskap: `restaurant_memberships`.
 - Admin-rutter har automatisk tenant-validering av route-bound modeller via middleware `tenant_bindings`.
 
-## Supabase setup (viktigt)
-1. Skapa ett Supabase-projekt.
-2. Gå till Database -> Connect och hämta **Direct connection** (inte pooler för migrations).
+## Neon setup (viktigt)
+1. Skapa ett Neon-projekt.
+2. Hämta anslutningssträngen och använd **den icke-poolade hosten** (utan `-pooler` i hostnamnet) för `DB_HOST`. Neons poolade pgbouncer-anslutning kör i transaction-pooling-läge, vilket bryter Laravels migrationstransaktioner (varje migration körs i en explicit transaktion — en `CREATE TABLE` följt av en separat `ALTER TABLE ... ADD CONSTRAINT` i samma transaktion misslyckas tyst med `SQLSTATE[25P02]` eftersom poolern kan byta bakomliggande anslutning mellan statements).
 3. Sätt `.env`:
 
 ```env
 DB_CONNECTION=pgsql
-DB_HOST=...
+DB_HOST=ep-xxxxxxxx.c-6.<region>.aws.neon.tech
 DB_PORT=5432
-DB_DATABASE=postgres
-DB_USERNAME=postgres
+DB_DATABASE=neondb
+DB_USERNAME=neondb_owner
 DB_PASSWORD=...
 DB_SSLMODE=require
 MAIL_MAILER=log
@@ -42,7 +42,7 @@ php artisan migrate
 php artisan db:seed
 ```
 
-Notering: Supabase API-nycklar behövs inte. Appen använder endast Postgres-anslutning.
+Notering: Neons free-tier skalar till noll vid inaktivitet (väcks automatiskt av nästa request) snarare än att pausa projektet helt som Supabase gör — undviker den typen av "projektet är pausat och behöver manuellt återupptas"-driftstopp.
 
 ## Lokal start
 ```bash
@@ -116,7 +116,7 @@ php artisan test
 ```
 
 ## Render deployment (utan databortfall)
-- Använd Supabase som persistent Postgres.
+- Använd Neon som persistent Postgres.
 - I Render, sätt Post Deploy Command till:
 
 ```bash
