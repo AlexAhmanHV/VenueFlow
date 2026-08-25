@@ -17,32 +17,32 @@
                     @csrf
                     <div class="sm:col-span-3">
                         <label for="default_buffer_minutes" class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200">Buffert före/efter (min)</label>
-                        <input type="number" name="default_buffer_minutes" id="default_buffer_minutes" value="{{ old('default_buffer_minutes', $settings->default_buffer_minutes) }}" min="0" max="120" required class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm">
+                        <input type="number" name="default_buffer_minutes" id="default_buffer_minutes" value="{{ old('default_buffer_minutes', $settings?->default_buffer_minutes) }}" min="0" max="120" required class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm">
                     </div>
 
                     <div class="sm:col-span-3">
                         <label for="cancellation_cutoff_minutes" class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200">Avbokningsgräns (min)</label>
-                        <input type="number" name="cancellation_cutoff_minutes" id="cancellation_cutoff_minutes" value="{{ old('cancellation_cutoff_minutes', $settings->cancellation_cutoff_minutes) }}" min="0" max="10080" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm">
+                        <input type="number" name="cancellation_cutoff_minutes" id="cancellation_cutoff_minutes" value="{{ old('cancellation_cutoff_minutes', $settings?->cancellation_cutoff_minutes) }}" min="0" max="10080" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm">
                     </div>
 
                     <div class="sm:col-span-3">
                         <label for="slot_interval_minutes" class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200">Slot-steg (min)</label>
                         <select name="slot_interval_minutes" id="slot_interval_minutes" required class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm">
                             @foreach([5, 10, 15, 20, 30, 60] as $interval)
-                                <option value="{{ $interval }}" @selected((int)old('slot_interval_minutes', $settings->slot_interval_minutes) === $interval)>{{ $interval }}</option>
+                                <option value="{{ $interval }}" @selected((int)old('slot_interval_minutes', $settings?->slot_interval_minutes) === $interval)>{{ $interval }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div class="sm:col-span-3">
                         <label for="max_simultaneous_bookings" class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200">Max samtidiga bokningar</label>
-                        <input type="number" name="max_simultaneous_bookings" id="max_simultaneous_bookings" value="{{ old('max_simultaneous_bookings', $settings->max_simultaneous_bookings) }}" min="1" max="500" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm">
+                        <input type="number" name="max_simultaneous_bookings" id="max_simultaneous_bookings" value="{{ old('max_simultaneous_bookings', $settings?->max_simultaneous_bookings) }}" min="1" max="500" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm">
                     </div>
 
                     <div class="col-span-full">
                         <div class="mt-2 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
                              <h4 class="text-base font-semibold text-gray-900 dark:text-white">Standardlängd per aktivitet (min)</h4>
-                             @php($durations = $settings->default_durations ?? [])
+                             @php($durations = $settings?->default_durations ?? [])
                              <div class="mt-4 grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-5">
                                  @foreach(\App\Enums\ResourceType::cases() as $type)
                                     <div>
