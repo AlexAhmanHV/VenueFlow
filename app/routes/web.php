@@ -41,7 +41,7 @@ Route::middleware(['resolve_restaurant'])
         Route::get('/', [PublicRestaurantController::class, 'landing'])->name('public.landing');
         Route::get('/menu', [PublicRestaurantController::class, 'menu'])->name('public.menu');
         Route::get('/book', [PublicBookingController::class, 'create'])
-            ->middleware('embed_session_cookie')
+            ->middleware('embed_session_cookie:check_origin')
             ->name('public.booking.create');
         Route::post('/book/add-item', [PublicBookingController::class, 'addItem'])
             ->middleware(['embed_session_cookie', 'throttle:public-booking'])
