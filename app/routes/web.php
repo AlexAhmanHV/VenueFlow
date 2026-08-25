@@ -14,6 +14,7 @@ use App\Http\Controllers\DemoLoginController;
 use App\Http\Controllers\RestaurantAdmin\AnalyticsController;
 use App\Http\Controllers\RestaurantAdmin\BookingController as AdminBookingController;
 use App\Http\Controllers\RestaurantAdmin\DashboardController;
+use App\Http\Controllers\RestaurantAdmin\FloorPlanController;
 use App\Http\Controllers\RestaurantAdmin\MenuController as AdminMenuController;
 use App\Http\Controllers\RestaurantAdmin\OperationsController;
 use App\Http\Controllers\RestaurantAdmin\ResourceController as AdminResourceController;
@@ -109,6 +110,13 @@ Route::middleware(['auth', 'verified', 'demo_read_only_admin', 'resolve_restaura
         Route::delete('/resources/{resource}', [AdminResourceController::class, 'destroy'])
             ->middleware('restaurant_member:MANAGER')
             ->name('restaurant.admin.resources.destroy');
+
+        Route::get('/floor-plan/edit', [FloorPlanController::class, 'edit'])
+            ->middleware('restaurant_member:MANAGER')
+            ->name('restaurant.admin.floor-plan.edit');
+        Route::patch('/floor-plan', [FloorPlanController::class, 'update'])
+            ->middleware('restaurant_member:MANAGER')
+            ->name('restaurant.admin.floor-plan.update');
 
         Route::get('/schedule', [AdminScheduleController::class, 'index'])->name('restaurant.admin.schedule.index');
         Route::post('/schedule/opening-hours', [AdminScheduleController::class, 'storeOpening'])

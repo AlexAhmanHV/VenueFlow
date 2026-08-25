@@ -29,12 +29,14 @@
 
             @if($canManage)
                 <a class="vf-btn-secondary" href="{{ route('restaurant.admin.resources.index', $restaurant->slug) }}">Resurser</a>
+                <a class="vf-btn-secondary" href="{{ route('restaurant.admin.floor-plan.edit', $restaurant->slug) }}">Golvplan</a>
                 <a class="vf-btn-secondary" href="{{ route('restaurant.admin.schedule.index', $restaurant->slug) }}">Schema</a>
                 <a class="vf-btn-secondary" href="{{ route('restaurant.admin.menu.index', $restaurant->slug) }}">Meny</a>
                 <a class="vf-btn-secondary" href="{{ route('restaurant.admin.staff.index', $restaurant->slug) }}">Personal</a>
                 <a class="vf-btn-secondary" href="{{ route('restaurant.admin.settings.edit', $restaurant->slug) }}">Inst&auml;llningar</a>
             @else
                 <span class="vf-btn-secondary pointer-events-none opacity-45" aria-disabled="true" title="Kr&auml;ver MANAGER">Resurser</span>
+                <span class="vf-btn-secondary pointer-events-none opacity-45" aria-disabled="true" title="Kr&auml;ver MANAGER">Golvplan</span>
                 <span class="vf-btn-secondary pointer-events-none opacity-45" aria-disabled="true" title="Kr&auml;ver MANAGER">Schema</span>
                 <span class="vf-btn-secondary pointer-events-none opacity-45" aria-disabled="true" title="Kr&auml;ver MANAGER">Meny</span>
                 <span class="vf-btn-secondary pointer-events-none opacity-45" aria-disabled="true" title="Kr&auml;ver MANAGER">Personal</span>
