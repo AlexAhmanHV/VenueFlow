@@ -16,7 +16,7 @@ class SetEmbedSessionCookieAttributes
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->boolean('embed')) {
+        if ($request->boolean('embed') && $request->header('Sec-Fetch-Site') !== 'same-origin') {
             config([
                 'session.same_site' => 'none',
                 'session.secure' => true,

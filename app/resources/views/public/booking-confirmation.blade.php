@@ -88,7 +88,7 @@
                      <a href="{{ route('public.booking.create', ['slug' => $restaurant->slug, 'embed' => $embed ? '1' : null]) }}" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                         Gör en ny bokning
                     </a>
-                    <a href="{{ route('public.landing', $restaurant->slug) }}" class="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600">
+                    <a href="{{ route('public.landing', $restaurant->slug) }}" target="_top" class="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600">
                         Till startsidan
                     </a>
                 </div>
