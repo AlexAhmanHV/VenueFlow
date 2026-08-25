@@ -138,6 +138,11 @@ class BookingController extends Controller
             'cancelled_at' => $to === BookingStatus::CANCELLED ? now('UTC') : null,
         ]);
 
+        if ($to === BookingStatus::CANCELLED) {
+            // Soft-delete items so cancelled bookings no longer block DB overlap constraint.
+            $booking->bookingItems()->delete();
+        }
+
         BookingStatusEvent::create([
             'guest_booking_id' => $booking->id,
             'from_status' => $from,

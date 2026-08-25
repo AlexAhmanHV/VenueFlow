@@ -29,6 +29,7 @@
             <option value="CONFIRMED">CONFIRMED</option>
             <option value="CHECKED_IN">CHECKED_IN</option>
             <option value="NO_SHOW">NO_SHOW</option>
+            <option value="CANCELLED">CANCELLED</option>
         </select>
         <button class="vf-btn-primary">Spara</button>
     </form>
