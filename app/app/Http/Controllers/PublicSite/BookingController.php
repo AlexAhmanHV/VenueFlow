@@ -166,6 +166,7 @@ class BookingController extends Controller
                 ->with('status', 'Lägg till minst en aktivitet först.');
         }
 
+        $partySize = (int) $request->integer('party_size', 2);
         $menuItems = $restaurant->menuItems()->where('active', true)->orderBy('name')->get();
         $hasTableBooking = Resource::query()
             ->where('restaurant_id', $restaurant->id)
@@ -181,7 +182,7 @@ class BookingController extends Controller
         $serveTimeMin = $firstStart->format('Y-m-d\TH:i');
         $serveTimeMax = $firstStart->copy()->addHours(2)->format('Y-m-d\TH:i');
 
-        return view('public.booking-details', compact('restaurant', 'selectedItems', 'menuItems', 'serveTimeMin', 'serveTimeMax', 'hasTableBooking'));
+        return view('public.booking-details', compact('restaurant', 'selectedItems', 'menuItems', 'serveTimeMin', 'serveTimeMax', 'hasTableBooking', 'partySize'));
     }
 
     public function store(StoreGuestBookingRequest $request): RedirectResponse
