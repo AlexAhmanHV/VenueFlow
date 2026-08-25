@@ -154,4 +154,65 @@ class ResourceOccupancyResolverTest extends TestCase
 
         $this->assertArrayNotHasKey($resource->id, $statuses);
     }
+
+    public function test_booking_starting_at_exactly_30_minutes_is_reserved_soon(): void
+    {
+        $resource = $this->makeResource('Table 1');
+        $now = Carbon::parse('2026-08-25 12:00:00', 'UTC');
+        $booking = $this->makeBooking(
+            $resource,
+            $now->copy()->addMinutes(30),
+            $now->copy()->addMinutes(90),
+            BookingStatus::CONFIRMED,
+        );
+
+        $statuses = ResourceOccupancyResolver::resolve(collect([$booking]), $now);
+
+        $this->assertSame('reserved_soon', $statuses[$resource->id]);
+    }
+
+    public function test_booking_starting_at_31_minutes_is_not_reserved_soon(): void
+    {
+        $resource = $this->makeResource('Table 1');
+        $now = Carbon::parse('2026-08-25 12:00:00', 'UTC');
+        $booking = $this->makeBooking(
+            $resource,
+            $now->copy()->addMinutes(31),
+            $now->copy()->addMinutes(91),
+            BookingStatus::CONFIRMED,
+        );
+
+        $statuses = ResourceOccupancyResolver::resolve(collect([$booking]), $now);
+
+        $this->assertArrayNotHasKey($resource->id, $statuses);
+    }
+
+    public function test_resource_occupied_by_one_item_stays_occupied_even_with_a_later_reserved_soon_item(): void
+    {
+        $resource = $this->makeResource('Table 1');
+        $now = Carbon::parse('2026-08-25 12:00:00', 'UTC');
+
+        // First booking: covers now (occupied) - ends at 12:05
+        $occupiedBooking = $this->makeBooking(
+            $resource,
+            $now->copy()->subMinutes(30),
+            $now->copy()->addMinutes(5),
+            BookingStatus::CHECKED_IN,
+        );
+
+        // Second booking on same resource: starts at 12:15 (15 minutes from now, within reserved_soon window)
+        $reservedSoonBooking = $this->makeBooking(
+            $resource,
+            $now->copy()->addMinutes(15),
+            $now->copy()->addMinutes(75),
+            BookingStatus::CONFIRMED,
+        );
+
+        $statuses = ResourceOccupancyResolver::resolve(
+            collect([$occupiedBooking, $reservedSoonBooking]),
+            $now,
+        );
+
+        $this->assertSame('occupied', $statuses[$resource->id]);
+    }
 }
