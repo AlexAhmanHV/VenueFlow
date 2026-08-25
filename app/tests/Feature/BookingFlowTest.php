@@ -35,7 +35,8 @@ class BookingFlowTest extends TestCase
             'restaurant_id' => $restaurant->id,
             'name'          => 'Table 1',
             'type'          => 'TABLE',
-            'capacity'      => 4,
+            'capacity_min'  => 2,
+            'capacity_max'  => 4,
             'active'        => true,
         ]);
     }
@@ -53,21 +54,26 @@ class BookingFlowTest extends TestCase
         return $user;
     }
 
-    private function bookingPayload(Resource $resource, string $date = '2026-08-01'): array
+    /**
+     * @return array<int, array{resource_id:int,resource_name:string,start_time_local:string,end_time_local:string}>
+     */
+    private function cartFor(Resource $resource, string $date = '2026-08-01'): array
+    {
+        return [[
+            'resource_id'      => $resource->id,
+            'resource_name'    => $resource->name,
+            'start_time_local' => "{$date} 18:00",
+            'end_time_local'   => "{$date} 20:00",
+        ]];
+    }
+
+    private function detailsPayload(): array
     {
         return [
             'customer_name' => 'Anna Andersson',
             'email'         => 'anna@example.com',
             'phone'         => '0701234567',
             'party_size'    => 2,
-            'note'          => null,
-            'booking_items' => [
-                [
-                    'resource_id'      => $resource->id,
-                    'start_time_local' => "{$date} 18:00:00",
-                    'end_time_local'   => "{$date} 20:00:00",
-                ],
-            ],
         ];
     }
 
@@ -80,10 +86,9 @@ class BookingFlowTest extends TestCase
         $restaurant = $this->makeRestaurant();
         $resource   = $this->makeResource($restaurant);
 
-        $response = $this->post(
-            "/r/{$restaurant->slug}/book",
-            $this->bookingPayload($resource)
-        );
+        $response = $this
+            ->withSession(["booking_wizard.{$restaurant->id}.items" => $this->cartFor($resource)])
+            ->post("/r/{$restaurant->slug}/book/details", $this->detailsPayload());
 
         $response->assertRedirect();
 
@@ -100,10 +105,12 @@ class BookingFlowTest extends TestCase
         $restaurant = $this->makeRestaurant();
         $resource   = $this->makeResource($restaurant);
 
-        $payload = $this->bookingPayload($resource);
+        $payload = $this->detailsPayload();
         unset($payload['customer_name'], $payload['email']);
 
-        $response = $this->post("/r/{$restaurant->slug}/book", $payload);
+        $response = $this
+            ->withSession(["booking_wizard.{$restaurant->id}.items" => $this->cartFor($resource)])
+            ->post("/r/{$restaurant->slug}/book/details", $payload);
 
         $response->assertSessionHasErrors(['customer_name', 'email']);
     }
@@ -114,10 +121,15 @@ class BookingFlowTest extends TestCase
 
         $restaurant = $this->makeRestaurant();
         $resource   = $this->makeResource($restaurant);
-        $payload    = $this->bookingPayload($resource);
+        $cart       = $this->cartFor($resource);
 
-        $this->post("/r/{$restaurant->slug}/book", $payload)->assertRedirect();
-        $response = $this->post("/r/{$restaurant->slug}/book", $payload);
+        $this->withSession(["booking_wizard.{$restaurant->id}.items" => $cart])
+            ->post("/r/{$restaurant->slug}/book/details", $this->detailsPayload())
+            ->assertRedirect();
+
+        $response = $this
+            ->withSession(["booking_wizard.{$restaurant->id}.items" => $cart])
+            ->post("/r/{$restaurant->slug}/book/details", $this->detailsPayload());
 
         $response->assertSessionHasErrors(['slot']);
         $this->assertSame(1, GuestBooking::query()->where('restaurant_id', $restaurant->id)->count());
@@ -131,11 +143,12 @@ class BookingFlowTest extends TestCase
         $resource   = $this->makeResource($restaurant);
         $admin      = $this->adminFor($restaurant);
 
-        $this->post("/r/{$restaurant->slug}/book", $this->bookingPayload($resource));
+        $this->withSession(["booking_wizard.{$restaurant->id}.items" => $this->cartFor($resource)])
+            ->post("/r/{$restaurant->slug}/book/details", $this->detailsPayload());
         $booking = GuestBooking::query()->where('restaurant_id', $restaurant->id)->firstOrFail();
 
         $this->actingAs($admin)
-            ->patch("/r/{$restaurant->slug}/admin/bookings/{$booking->id}/status", [
+            ->post("/r/{$restaurant->slug}/admin/bookings/{$booking->id}/status", [
                 'status' => BookingStatus::CANCELLED->value,
             ])
             ->assertRedirect();
@@ -150,18 +163,23 @@ class BookingFlowTest extends TestCase
         $restaurant = $this->makeRestaurant();
         $resource   = $this->makeResource($restaurant);
         $admin      = $this->adminFor($restaurant);
-        $payload    = $this->bookingPayload($resource);
+        $cart       = $this->cartFor($resource);
 
-        $this->post("/r/{$restaurant->slug}/book", $payload);
+        $this->withSession(["booking_wizard.{$restaurant->id}.items" => $cart])
+            ->post("/r/{$restaurant->slug}/book/details", $this->detailsPayload());
         $booking = GuestBooking::query()->where('restaurant_id', $restaurant->id)->firstOrFail();
 
         $this->actingAs($admin)
-            ->patch("/r/{$restaurant->slug}/admin/bookings/{$booking->id}/status", [
+            ->post("/r/{$restaurant->slug}/admin/bookings/{$booking->id}/status", [
                 'status' => BookingStatus::CANCELLED->value,
             ]);
 
         // Same slot should now be bookable again.
-        $this->post("/r/{$restaurant->slug}/book", $payload)->assertRedirect();
+        $this
+            ->withSession(["booking_wizard.{$restaurant->id}.items" => $cart])
+            ->post("/r/{$restaurant->slug}/book/details", $this->detailsPayload())
+            ->assertRedirect();
+
         $this->assertSame(2, GuestBooking::query()->where('restaurant_id', $restaurant->id)->count());
     }
 
@@ -174,12 +192,13 @@ class BookingFlowTest extends TestCase
         $resourceA   = $this->makeResource($restaurantA);
         $adminB      = $this->adminFor($restaurantB);
 
-        $this->post("/r/{$restaurantA->slug}/book", $this->bookingPayload($resourceA));
+        $this->withSession(["booking_wizard.{$restaurantA->id}.items" => $this->cartFor($resourceA)])
+            ->post("/r/{$restaurantA->slug}/book/details", $this->detailsPayload());
         $booking = GuestBooking::query()->where('restaurant_id', $restaurantA->id)->firstOrFail();
 
         // Admin of restaurant B should not be able to touch restaurant A's booking.
         $this->actingAs($adminB)
-            ->patch("/r/{$restaurantA->slug}/admin/bookings/{$booking->id}/status", [
+            ->post("/r/{$restaurantA->slug}/admin/bookings/{$booking->id}/status", [
                 'status' => BookingStatus::CANCELLED->value,
             ])
             ->assertForbidden();
