@@ -19,6 +19,8 @@ class Resource extends Model
         'capacity_min',
         'capacity_max',
         'active',
+        'position_x',
+        'position_y',
     ];
 
     protected function casts(): array
@@ -26,6 +28,8 @@ class Resource extends Model
         return [
             'type' => ResourceType::class,
             'active' => 'boolean',
+            'position_x' => 'float',
+            'position_y' => 'float',
         ];
     }
 
@@ -37,5 +41,10 @@ class Resource extends Model
     public function bookingItems(): HasMany
     {
         return $this->hasMany(BookingItem::class);
+    }
+
+    public function isPositioned(): bool
+    {
+        return $this->position_x !== null && $this->position_y !== null;
     }
 }
