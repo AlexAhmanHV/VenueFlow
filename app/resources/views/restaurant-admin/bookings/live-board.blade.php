@@ -166,15 +166,25 @@
                     </p>
                 @endif
 
-                <x-modal name="floor-plan-booking" :show="false" maxWidth="md">
-                    <div class="p-6">
-                        @foreach($currentBookingByResource as $resourceId => $booking)
-                            <div x-show="openResourceId === {{ $resourceId }}" x-cloak>
-                                @include('restaurant-admin.bookings.partials._booking-card', ['restaurant' => $restaurant, 'booking' => $booking])
-                            </div>
-                        @endforeach
+                <div
+                    x-show="openResourceId !== null"
+                    x-cloak
+                    @keydown.escape.window="openResourceId = null"
+                    class="fixed inset-0 z-50 flex items-center justify-center px-4"
+                >
+                    <div class="absolute inset-0 bg-gray-500 opacity-75" @click="openResourceId = null"></div>
+                    <div class="relative z-10 w-full sm:max-w-md rounded-lg bg-white shadow-xl">
+                        <div class="p-6">
+                            @foreach($currentBookingByResource as $resourceId => $booking)
+                                <template x-if="openResourceId === {{ $resourceId }}">
+                                    <div>
+                                        @include('restaurant-admin.bookings.partials._booking-card', ['restaurant' => $restaurant, 'booking' => $booking])
+                                    </div>
+                                </template>
+                            @endforeach
+                        </div>
                     </div>
-                </x-modal>
+                </div>
             </div>
 
             <script>
@@ -190,7 +200,6 @@
                         },
                         openResource(resourceId) {
                             this.openResourceId = resourceId;
-                            window.dispatchEvent(new CustomEvent('open-modal', { detail: 'floor-plan-booking' }));
                         },
                     };
                 }
