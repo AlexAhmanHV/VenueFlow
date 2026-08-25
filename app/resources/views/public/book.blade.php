@@ -1,4 +1,4 @@
-<x-public-layout :restaurant="$restaurant">
+<x-public-layout :restaurant="$restaurant" :embed="$embed">
     <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
 
         {{-- Header --}}
@@ -34,6 +34,9 @@
                 <div class="border border-white/10 bg-white/5 p-6 backdrop-blur-md">
                     <h2 class="font-display text-lg font-semibold uppercase tracking-wide text-white">Hitta lediga tider</h2>
                     <form method="GET" class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        @if($embed)
+                            <input type="hidden" name="embed" value="1">
+                        @endif
                         <div>
                             <label for="resource_type_select" class="block text-xs font-semibold uppercase tracking-widest text-white/50">Aktivitet</label>
                             <select id="resource_type_select" name="resource_type" class="pub-input mt-2 w-full">
@@ -70,6 +73,9 @@
                     @if(count($slots))
                     <form method="POST" action="{{ route('public.booking.add-item', $restaurant->slug) }}" class="mt-5 space-y-4">
                         @csrf
+                        @if($embed)
+                            <input type="hidden" name="embed" value="1">
+                        @endif
                         <input type="hidden" name="resource_type" value="{{ $resourceType }}">
                         <input type="hidden" name="date" value="{{ $date }}">
                         <input type="hidden" name="party_size" value="{{ $partySize }}">
@@ -113,6 +119,9 @@
                             </div>
                             <form method="POST" action="{{ route('public.booking.remove-item', $restaurant->slug) }}">
                                 @csrf
+                                @if($embed)
+                                    <input type="hidden" name="embed" value="1">
+                                @endif
                                 <input type="hidden" name="index" value="{{ $index }}">
                                 <button type="submit" class="text-xs font-semibold text-red-500 transition hover:text-red-400">Ta bort</button>
                             </form>
@@ -123,7 +132,7 @@
                     </ul>
                     <div class="mt-6">
                         @if(count($selectedItems))
-                            <a href="{{ route('public.booking.details', $restaurant->slug) }}" class="pub-btn-primary block w-full text-center">
+                            <a href="{{ route('public.booking.details', ['slug' => $restaurant->slug, 'embed' => $embed ? '1' : null]) }}" class="pub-btn-primary block w-full text-center">
                                 Fortsätt →
                             </a>
                         @else

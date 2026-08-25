@@ -1,4 +1,4 @@
-<x-public-layout :restaurant="$restaurant">
+<x-public-layout :restaurant="$restaurant" :embed="$embed">
     <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
 
         {{-- Header --}}
@@ -41,6 +41,9 @@
 
                     <form method="POST" action="{{ route('public.booking.store', $restaurant->slug) }}" class="space-y-8">
                         @csrf
+                        @if($embed)
+                            <input type="hidden" name="embed" value="1">
+                        @endif
 
                         {{-- Contact --}}
                         <div>
@@ -140,7 +143,7 @@
                         @endforeach
                     </ul>
                     <div class="mt-6 border-t border-white/10 pt-5">
-                        <a href="{{ route('public.booking.create', $restaurant->slug) }}" class="pub-btn-secondary block w-full text-center text-xs">
+                        <a href="{{ route('public.booking.create', ['slug' => $restaurant->slug, 'embed' => $embed ? '1' : null]) }}" class="pub-btn-secondary block w-full text-center text-xs">
                             ← Ändra aktiviteter
                         </a>
                     </div>

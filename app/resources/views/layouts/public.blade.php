@@ -41,6 +41,7 @@
     </head>
     <body class="font-body antialiased">
         @php
+            $embed = $embed ?? false;
             $slugSeed = $restaurant?->slug ?? 'venueflow';
             $rotationSeed = crc32($slugSeed) + (int) now()->dayOfYear;
             $backgroundDirs = [
@@ -65,42 +66,59 @@
                 : null;
         @endphp
 
-        <div class="pub-shell relative min-h-[100dvh] overflow-x-hidden bg-[#0c0c0c] text-white">
+        <div class="pub-shell relative {{ $embed ? '' : 'min-h-[100dvh]' }} overflow-x-hidden bg-[#0c0c0c] text-white">
 
-            {{-- Background image --}}
-            @if($bgImagePath)
+            @unless($embed)
+                {{-- Background image --}}
+                @if($bgImagePath)
+                    <div
+                        class="pointer-events-none fixed inset-0 bg-cover bg-center bg-no-repeat"
+                        style="background-image: url('{{ asset($bgImagePath) }}'); opacity: 0.18;"
+                        aria-hidden="true"
+                    ></div>
+                @endif
+
+                {{-- Gradient vignette - darker at edges, lighter center to let photo breathe --}}
                 <div
-                    class="pointer-events-none fixed inset-0 bg-cover bg-center bg-no-repeat"
-                    style="background-image: url('{{ asset($bgImagePath) }}'); opacity: 0.18;"
+                    class="pointer-events-none fixed inset-0"
+                    style="background: linear-gradient(to bottom, rgba(12,12,12,0.85) 0%, rgba(12,12,12,0.45) 40%, rgba(12,12,12,0.75) 100%);"
                     aria-hidden="true"
                 ></div>
-            @endif
-
-            {{-- Gradient vignette - darker at edges, lighter center to let photo breathe --}}
-            <div
-                class="pointer-events-none fixed inset-0"
-                style="background: linear-gradient(to bottom, rgba(12,12,12,0.85) 0%, rgba(12,12,12,0.45) 40%, rgba(12,12,12,0.75) 100%);"
-                aria-hidden="true"
-            ></div>
+            @endunless
 
             <main class="relative z-10">
                 {{ $slot }}
             </main>
 
-            <footer class="relative z-10 border-t py-7" style="border-color:rgba(255,255,255,0.07)">
-                <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 sm:flex-row sm:px-10">
-                    <p class="font-display text-[11px] font-semibold tracking-[0.18em] text-white/25" style="text-transform:uppercase">
-                        {{ $restaurant->name ?? 'VenueFlow' }}
-                    </p>
-                    <p class="text-xs text-white/25">
-                        Bokningssystem av
-                        <a href="https://alexahman.se" target="_blank" rel="noopener noreferrer"
-                           class="text-white/40 underline underline-offset-4 transition hover:text-white/70">
-                            AlexAhman.se
-                        </a>
-                    </p>
-                </div>
-            </footer>
+            @unless($embed)
+                <footer class="relative z-10 border-t py-7" style="border-color:rgba(255,255,255,0.07)">
+                    <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 sm:flex-row sm:px-10">
+                        <p class="font-display text-[11px] font-semibold tracking-[0.18em] text-white/25" style="text-transform:uppercase">
+                            {{ $restaurant->name ?? 'VenueFlow' }}
+                        </p>
+                        <p class="text-xs text-white/25">
+                            Bokningssystem av
+                            <a href="https://alexahman.se" target="_blank" rel="noopener noreferrer"
+                               class="text-white/40 underline underline-offset-4 transition hover:text-white/70">
+                                AlexAhman.se
+                            </a>
+                        </p>
+                    </div>
+                </footer>
+            @endunless
         </div>
+
+        @if($embed)
+            <script>
+                (function () {
+                    function reportHeight() {
+                        window.parent.postMessage({ venueflowEmbedHeight: document.documentElement.scrollHeight }, '*');
+                    }
+                    new ResizeObserver(reportHeight).observe(document.body);
+                    window.addEventListener('load', reportHeight);
+                    reportHeight();
+                })();
+            </script>
+        @endif
     </body>
 </html>
