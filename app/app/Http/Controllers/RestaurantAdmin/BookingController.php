@@ -13,6 +13,7 @@ use App\Models\BookingNote;
 use App\Models\BookingStatusEvent;
 use App\Models\GuestBooking;
 use App\Services\MoveBookingItem;
+use App\Services\ResourceOccupancyResolver;
 use App\Services\WaitlistNotifier;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -61,6 +62,9 @@ class BookingController extends Controller
 
         $resources = $restaurant->resources()->where('active', true)->orderBy('type')->orderBy('name')->get();
 
+        $occupancy = ResourceOccupancyResolver::resolve($bookings, Carbon::now());
+        $activeView = $request->string('view')->toString() === 'floor' ? 'floor' : 'grid';
+
         $openingHour = $restaurant->openingHours()->where('weekday', (int) $dayLocal->isoWeekday())->first();
         $opensAt = $openingHour?->opens_at ? substr((string) $openingHour->opens_at, 0, 5) : '12:00';
         $closesAt = $openingHour?->closes_at ? substr((string) $openingHour->closes_at, 0, 5) : '23:00';
@@ -74,7 +78,7 @@ class BookingController extends Controller
             $cursor->addMinutes($slotStep);
         }
 
-        return view('restaurant-admin.bookings.live-board', compact('restaurant', 'bookings', 'resources', 'slots', 'boardDate', 'slotStep'));
+        return view('restaurant-admin.bookings.live-board', compact('restaurant', 'bookings', 'resources', 'slots', 'boardDate', 'slotStep', 'occupancy', 'activeView'));
     }
 
     public function show(Request $request, string $slug, GuestBooking $booking)
