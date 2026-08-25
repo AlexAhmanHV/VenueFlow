@@ -6,6 +6,7 @@ use App\Http\Middleware\EnsureDemoReadOnlyAdmin;
 use App\Http\Middleware\EnsureTenantRouteBindings;
 use App\Http\Middleware\EnsureDemoFullAccess;
 use App\Http\Middleware\ResolveRestaurantFromSlug;
+use App\Http\Middleware\SetEmbedSessionCookieAttributes;
 use App\Http\Middleware\TrustProxies;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'tenant_bindings' => EnsureTenantRouteBindings::class,
             'demo_full_access' => EnsureDemoFullAccess::class,
             'demo_read_only_admin' => EnsureDemoReadOnlyAdmin::class,
+            'embed_session_cookie' => SetEmbedSessionCookieAttributes::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

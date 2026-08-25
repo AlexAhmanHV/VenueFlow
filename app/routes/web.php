@@ -39,16 +39,24 @@ Route::middleware(['resolve_restaurant'])
     ->group(function () {
         Route::get('/', [PublicRestaurantController::class, 'landing'])->name('public.landing');
         Route::get('/menu', [PublicRestaurantController::class, 'menu'])->name('public.menu');
-        Route::get('/book', [PublicBookingController::class, 'create'])->name('public.booking.create');
+        Route::get('/book', [PublicBookingController::class, 'create'])
+            ->middleware('embed_session_cookie')
+            ->name('public.booking.create');
         Route::post('/book/add-item', [PublicBookingController::class, 'addItem'])
-            ->middleware('throttle:public-booking')
+            ->middleware(['embed_session_cookie', 'throttle:public-booking'])
             ->name('public.booking.add-item');
-        Route::post('/book/remove-item', [PublicBookingController::class, 'removeItem'])->name('public.booking.remove-item');
-        Route::get('/book/details', [PublicBookingController::class, 'details'])->name('public.booking.details');
+        Route::post('/book/remove-item', [PublicBookingController::class, 'removeItem'])
+            ->middleware('embed_session_cookie')
+            ->name('public.booking.remove-item');
+        Route::get('/book/details', [PublicBookingController::class, 'details'])
+            ->middleware('embed_session_cookie')
+            ->name('public.booking.details');
         Route::post('/book/details', [PublicBookingController::class, 'store'])
-            ->middleware('throttle:public-booking')
+            ->middleware(['embed_session_cookie', 'throttle:public-booking'])
             ->name('public.booking.store');
-        Route::get('/booking/{public_id}', [PublicBookingController::class, 'show'])->name('public.booking.show');
+        Route::get('/booking/{public_id}', [PublicBookingController::class, 'show'])
+            ->middleware('embed_session_cookie')
+            ->name('public.booking.show');
         Route::get('/cancel', [PublicBookingController::class, 'cancel'])
             ->middleware('throttle:6,1')
             ->name('public.booking.cancel');

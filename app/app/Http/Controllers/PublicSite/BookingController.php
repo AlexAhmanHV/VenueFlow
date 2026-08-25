@@ -53,13 +53,15 @@ class BookingController extends Controller
         }
 
         $selectedItems = $this->selectedItems($request, $restaurant->id);
+        $embed = $request->boolean('embed');
 
-        return view('public.book', compact('restaurant', 'slots', 'resourceType', 'date', 'partySize', 'duration', 'selectedItems'));
+        return view('public.book', compact('restaurant', 'slots', 'resourceType', 'date', 'partySize', 'duration', 'selectedItems', 'embed'));
     }
 
     public function addItem(Request $request): RedirectResponse
     {
         $restaurant = $request->attributes->get('restaurant');
+        $embed = $request->boolean('embed');
         BookingSlotHold::query()->where('expires_at', '<=', now('UTC'))->delete();
 
         $slot = $request->string('resource_slot')->toString();
@@ -127,6 +129,7 @@ class BookingController extends Controller
                 'date' => $data['date'] ?? null,
                 'party_size' => $data['party_size'] ?? null,
                 'duration_minutes' => $data['duration_minutes'] ?? null,
+                'embed' => $embed ? '1' : null,
             ])
             ->with('status', $duplicate ? 'Aktiviteten fanns redan i bokningen.' : 'Aktivitet tillagd. Välj fler eller gå vidare.');
     }
@@ -158,11 +161,12 @@ class BookingController extends Controller
     public function details(Request $request)
     {
         $restaurant = $request->attributes->get('restaurant');
+        $embed = $request->boolean('embed');
         $selectedItems = $this->selectedItems($request, $restaurant->id);
 
         if (empty($selectedItems)) {
             return redirect()
-                ->route('public.booking.create', ['slug' => $restaurant->slug])
+                ->route('public.booking.create', ['slug' => $restaurant->slug, 'embed' => $embed ? '1' : null])
                 ->with('status', 'Lägg till minst en aktivitet först.');
         }
 
@@ -182,12 +186,13 @@ class BookingController extends Controller
         $serveTimeMin = $firstStart->format('Y-m-d\TH:i');
         $serveTimeMax = $firstStart->copy()->addHours(2)->format('Y-m-d\TH:i');
 
-        return view('public.booking-details', compact('restaurant', 'selectedItems', 'menuItems', 'serveTimeMin', 'serveTimeMax', 'hasTableBooking', 'partySize'));
+        return view('public.booking-details', compact('restaurant', 'selectedItems', 'menuItems', 'serveTimeMin', 'serveTimeMax', 'hasTableBooking', 'partySize', 'embed'));
     }
 
     public function store(StoreGuestBookingRequest $request): RedirectResponse
     {
         $restaurant = $request->attributes->get('restaurant');
+        $embed = $request->boolean('embed');
 
         $selectedItems = $this->selectedItems($request, $restaurant->id);
         if (empty($selectedItems)) {
@@ -239,12 +244,14 @@ class BookingController extends Controller
         return redirect()->route('public.booking.show', [
             'slug' => $restaurant->slug,
             'public_id' => $booking->public_id,
+            'embed' => $embed ? '1' : null,
         ]);
     }
 
     public function show(Request $request, string $slug, string $public_id)
     {
         $restaurant = $request->attributes->get('restaurant');
+        $embed = $request->boolean('embed');
 
         $booking = GuestBooking::query()
             ->where('restaurant_id', $restaurant->id)
@@ -252,7 +259,7 @@ class BookingController extends Controller
             ->with(['bookingItems.resource', 'preorders.items.menuItem'])
             ->firstOrFail();
 
-        return view('public.booking-confirmation', compact('restaurant', 'booking'));
+        return view('public.booking-confirmation', compact('restaurant', 'booking', 'embed'));
     }
 
     public function cancel(Request $request): RedirectResponse

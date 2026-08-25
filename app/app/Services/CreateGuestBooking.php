@@ -37,7 +37,7 @@ class CreateGuestBooking
         }
 
         try {
-            $booking = DB::transaction(function () use ($restaurant, $payload, $tz, $buffer, $cancelToken, $bookingItems) {
+            $booking = DB::transaction(function () use ($restaurant, $payload, $tz, $buffer, $maxSimultaneous, $cancelToken, $bookingItems) {
                 $booking = GuestBooking::create([
                     'restaurant_id' => $restaurant->id,
                     'public_id' => (string) Str::uuid(),
