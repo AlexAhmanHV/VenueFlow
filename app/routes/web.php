@@ -14,6 +14,7 @@ use App\Http\Controllers\DemoLoginController;
 use App\Http\Controllers\RestaurantAdmin\AnalyticsController;
 use App\Http\Controllers\RestaurantAdmin\BookingController as AdminBookingController;
 use App\Http\Controllers\RestaurantAdmin\DashboardController;
+use App\Http\Controllers\RestaurantAdmin\EmbedController;
 use App\Http\Controllers\RestaurantAdmin\FloorPlanController;
 use App\Http\Controllers\RestaurantAdmin\MenuController as AdminMenuController;
 use App\Http\Controllers\RestaurantAdmin\OperationsController;
@@ -168,6 +169,7 @@ Route::middleware(['auth', 'verified', 'demo_read_only_admin', 'resolve_restaura
             ->name('restaurant.admin.menu.destroy');
 
         Route::get('/analytics', AnalyticsController::class)->name('restaurant.admin.analytics');
+        Route::get('/embed', [EmbedController::class, 'show'])->name('restaurant.admin.embed.show');
 
         Route::get('/bookings', [AdminBookingController::class, 'index'])->name('restaurant.admin.bookings.index');
         Route::get('/bookings/live-board', [AdminBookingController::class, 'liveBoard'])->name('restaurant.admin.bookings.live');
