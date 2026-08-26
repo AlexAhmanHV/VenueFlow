@@ -1,8 +1,18 @@
 # VenueFlow
 
-A multi-tenant venue booking system built as a portfolio project. Covers the full stack from public guest booking to real-time admin operations and platform management.
+A multi-tenant venue booking system built as a portfolio project. Covers the full stack from public guest booking to real-time admin operations and platform management — including a drag-to-arrange visual floor plan for the live board, and an embeddable booking widget venues can put on their own website.
 
 **Live demo:** [venueflow.alexahman.se](https://venueflow.alexahman.se)
+
+---
+
+## Screenshots
+
+| Guest booking flow | Live board · visual floor plan |
+|---|---|
+| ![Guest booking flow](docs/screenshots/booking.png) | ![Occupied/reserved/free floor plan on the live board](docs/screenshots/floor-plan.png) |
+
+![Public restaurant page](docs/screenshots/landing.png)
 
 ---
 
