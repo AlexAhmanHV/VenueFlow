@@ -150,4 +150,10 @@ Demo credentials on the [demo hub](https://venueflow.alexahman.se).
 
 ---
 
+## License
+
+The code is licensed under [MIT](LICENSE). The background photos in `app/public/images/` are not covered by the license.
+
+---
+
 Built by [Alex Ahman](https://alexahman.se)
