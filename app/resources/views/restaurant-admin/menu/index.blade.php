@@ -158,7 +158,7 @@
                 @php $isDrink = $item->drink_template_id !== null; @endphp
                 <article class="group rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md" draggable="true" data-item-id="{{ $item->id }}">
                     <div class="relative">
-                        <img src="{{ $item->image_url ?: asset('images/menu/fallback.svg') }}" alt="{{ $item->name }}" class="h-44 w-full rounded-t-2xl object-cover">
+                        <img loading="lazy" decoding="async" src="{{ $item->image_url ?: asset('images/menu/fallback.svg') }}" alt="{{ $item->name }}" class="h-44 w-full rounded-t-2xl object-cover">
                         <div class="absolute left-3 top-3 rounded-full bg-white/90 px-2 py-1 text-xs font-semibold text-gray-800">
                             {{ $isDrink ? 'Dryck' : 'Mat' }}
                         </div>

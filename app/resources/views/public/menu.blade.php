@@ -24,14 +24,19 @@
                         <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $foodLabels[$key] ?? 'Mat' }}</h3>
                         <div class="mt-5 divide-y divide-gray-100 dark:divide-gray-700">
                             @foreach($group as $item)
-                                <div class="py-4">
-                                    <div class="flex justify-between gap-4">
-                                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $item->name }}</h4>
-                                        <p class="text-lg font-medium text-gray-900 dark:text-white">{{ number_format($item->price, 0, ',', ' ') }} kr</p>
-                                    </div>
-                                    @if($item->description)
-                                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ $item->description }}</p>
+                                <div class="flex gap-4 py-4">
+                                    @if($item->photo_url)
+                                        <img src="{{ $item->photo_url }}" alt="{{ $item->name }}" width="96" height="64" loading="lazy" decoding="async" class="h-16 w-24 shrink-0 rounded-lg object-cover">
                                     @endif
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex justify-between gap-4">
+                                            <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $item->name }}</h4>
+                                            <p class="text-lg font-medium text-gray-900 dark:text-white">{{ number_format($item->price, 0, ',', ' ') }} kr</p>
+                                        </div>
+                                        @if($item->description)
+                                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ $item->description }}</p>
+                                        @endif
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
@@ -48,14 +53,19 @@
                         <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $drinkLabels[$key] ?? 'Dryck' }}</h3>
                         <div class="mt-5 divide-y divide-gray-100 dark:divide-gray-700">
                             @foreach($group as $item)
-                                <div class="py-4">
-                                    <div class="flex justify-between gap-4">
-                                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $item->name }}</h4>
-                                        <p class="text-lg font-medium text-gray-900 dark:text-white">{{ number_format($item->price, 0, ',', ' ') }} kr</p>
-                                    </div>
-                                    @if($item->description)
-                                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ $item->description }}</p>
+                                <div class="flex gap-4 py-4">
+                                    @if($item->photo_url)
+                                        <img src="{{ $item->photo_url }}" alt="{{ $item->name }}" width="96" height="64" loading="lazy" decoding="async" class="h-16 w-24 shrink-0 rounded-lg object-cover">
                                     @endif
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex justify-between gap-4">
+                                            <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $item->name }}</h4>
+                                            <p class="text-lg font-medium text-gray-900 dark:text-white">{{ number_format($item->price, 0, ',', ' ') }} kr</p>
+                                        </div>
+                                        @if($item->description)
+                                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ $item->description }}</p>
+                                        @endif
+                                    </div>
                                 </div>
                             @endforeach
                         </div>

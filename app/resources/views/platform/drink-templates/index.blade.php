@@ -79,7 +79,7 @@
                     @forelse($templates as $template)
                         <tr>
                             <td class="px-4 py-3">
-                                <img src="{{ $template->image_url ?: asset('images/menu/fallback.svg') }}" alt="{{ $template->name }}" class="h-14 w-24 rounded-lg object-cover">
+                                <img loading="lazy" decoding="async" src="{{ $template->image_url ?: asset('images/menu/fallback.svg') }}" alt="{{ $template->name }}" class="h-14 w-24 rounded-lg object-cover">
                             </td>
                             <td class="px-4 py-3 font-medium">{{ $template->name }}</td>
                             <td class="px-4 py-3">{{ number_format($template->base_price, 2, ',', ' ') }} kr</td>

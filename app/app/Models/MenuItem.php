@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\MenuPhoto;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -56,6 +57,13 @@ class MenuItem extends Model
 
     public function getImageUrlAttribute(): ?string
     {
+        if (! $this->image_path || MenuPhoto::isGeneratedPlaceholder($this->image_path)) {
+            $photo = MenuPhoto::urlFor($this->name);
+            if ($photo !== null) {
+                return $photo;
+            }
+        }
+
         if (! $this->image_path) {
             return null;
         }
@@ -73,5 +81,15 @@ class MenuItem extends Model
         }
 
         return '/storage/'.$this->image_path;
+    }
+
+    /** A real photo for the public menu: an uploaded image or a bundled stock photo, never a placeholder. */
+    public function getPhotoUrlAttribute(): ?string
+    {
+        if ($this->image_path && ! MenuPhoto::isGeneratedPlaceholder($this->image_path)) {
+            return $this->image_url;
+        }
+
+        return MenuPhoto::urlFor($this->name);
     }
 }

@@ -152,7 +152,7 @@ Demo credentials on the [demo hub](https://venueflow.alexahman.se).
 
 ## License
 
-The code is licensed under [MIT](LICENSE). The background photos in `app/public/images/` are not covered by the license.
+The code is licensed under [MIT](LICENSE). The photos in `app/public/images/` (menu, restaurant backgrounds, login) are from Unsplash under the [Unsplash License](https://unsplash.com/license) and are not covered by the MIT license — see [docs/IMAGE_CREDITS.md](docs/IMAGE_CREDITS.md). They are stored as WebP at the size they're shown (menu photos 640×427, ~45 KB each), and seeded menu items get a photo by name via `config/menu_photos.php` (an uploaded image always wins).
 
 ---
 

@@ -32,7 +32,7 @@
 
             <!-- Right Side: Image/Branding -->
             <div class="relative hidden w-0 flex-1 lg:block">
-                <img class="absolute inset-0 h-full w-full object-cover" src="https://images.unsplash.com/photo-1560439514-4e9645039924?q=80&w=2073&auto=format&fit=crop" alt="Background">
+                <img class="absolute inset-0 h-full w-full object-cover" src="{{ asset('images/auth/login.webp') }}" alt="" width="1200" height="1400" decoding="async">
                 <div class="absolute inset-0 bg-gradient-to-tr from-emerald-900/80 to-slate-900/40 mix-blend-multiply"></div>
                 <div class="absolute bottom-0 left-0 p-20 text-white">
                     <h3 class="text-3xl font-bold">Ditt bokningssystem, live.</h3>

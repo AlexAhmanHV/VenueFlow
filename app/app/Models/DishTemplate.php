@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\MenuPhoto;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -35,6 +36,13 @@ class DishTemplate extends Model
 
     public function getImageUrlAttribute(): ?string
     {
+        if (! $this->image_path || MenuPhoto::isGeneratedPlaceholder($this->image_path)) {
+            $photo = MenuPhoto::urlFor($this->name);
+            if ($photo !== null) {
+                return $photo;
+            }
+        }
+
         if (! $this->image_path) {
             return null;
         }
